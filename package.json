@@ -1,0 +1,25 @@
+{
+  "name": "brownianmotion-multipleparticle_website",
+  "version": "1.0.0",
+  "description": "Website to Visualize #brownian motion, multiple particle #forward modelling",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Crynetomega/BrownianMotion-MultipleParticle_Website.git"
+  },
+  "keywords": [
+    "physics"
+  ],
+  "author": "Benjamin Thomas Schwertfeger",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Crynetomega/BrownianMotion-MultipleParticle_Website/issues"
+  },
+  "homepage": "https://github.com/Crynetomega/BrownianMotion-MultipleParticle_Website#readme",
+  "dependencies": {
+    "chartjs-plugin-zoom": "^1.1.1"
+  }
+}

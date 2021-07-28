@@ -1,0 +1,464 @@
+:root {
+  --primary-bg-color: white;
+  --primary-font-color: black;
+  --primary-font-size: 18px;
+}
+
+html {
+  font-family: Helvetica;
+  margin: 0px;
+  padding: 0px;
+  color: var(--primary-font-color);
+  background-color: var(--primary-bg-color);
+  font-size: var(--primary-font-size);
+  line-height: 22px;
+}
+
+p {
+  text-align: justify;
+}
+.main {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.headline2 {
+  text-align: center;
+}
+
+.description{
+  padding:30px;
+}
+.description p {
+  text-align: justify;
+}
+
+a {
+  text-decoration: none;
+  color: blue;
+}
+a:hover {
+  color: red;
+}
+
+.input-wrapper {
+  min-width: 290px;
+  margin: 8px;
+}
+.input-wrapper,
+.slide-value {
+  display: inline-block;
+}
+
+.slide {
+  float: right;
+  -webkit-appearance: none;
+  min-width: 225px;
+  height: 20px;
+
+  outline: none;
+  opacity: 0.7;
+  padding: 0px;
+  margin: 2px 0px 2px 0px;
+
+  border-radius: 15px;
+  background: #ffffff;
+  box-shadow: inset 26px 26px 52px #b3b3b3, inset -26px -26px 52px #ffffff;
+}
+.slide:hover {
+  opacity: 1;
+}
+.slide::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 35px;
+  height: 20px;
+  cursor: pointer;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #e6e6e6, #ffffff);
+  box-shadow: 6px 6px 12px #969696, -0px -0px 0px #ffffff;
+}
+.slider::-moz-range-thumb {
+  width: 35px;
+  height: 20px;
+  cursor: pointer;
+  background: linear-gradient(145deg, #e6e6e6, #ffffff);
+  box-shadow: 6px 6px 12px #969696, -0px -0px 0px #ffffff;
+}
+
+.slide-value {
+  width: 65px;
+  height: 20px;
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  padding: 0px 0px;
+  margin-top: 2px;
+  margin-left: 0px;
+  margin-right: 10px;
+
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 6px 6px 12px #969696, -6px -6px 12px #ffffff;
+}
+
+.someBtn {
+  background-color: #ffffff;
+  border: none;
+  color: black;
+  margin: 5px;
+  padding: 10px 22px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 15px;
+  box-shadow: 26px 26px 52px #969696, -26px -26px 52px #ffffff;
+}
+.someBtn:hover {
+  background: linear-gradient(145deg, #e6e6e6, #ffffff);
+  box-shadow: 8px 8px 16px #969696, -8px -8px 16px #ffffff;
+}
+.someBtn:active {
+  background-color: #ffffff;
+  box-shadow: inset 8px 8px 16px #969696, inset -8px -8px 16px #ffffff;
+  /* transform: translateY(4px); */
+}
+
+/* PLOT AND INPUT CONTAINER */
+.bm-plot-content-wrapper,
+.bm-dens-plot-content-wrapper{
+  border-radius: 30px 30px 0px 0px;
+  box-shadow: 26px 0px 52px #969696, -26px -26px 52px #ffffff;
+}
+
+.bm-input-section,
+.bm-dens-input-section{
+  border-radius: 0px 0px 30px 30px;
+  box-shadow: 26px 26px 52px #969696, -26px -26px 52px #ffffff;
+}
+
+.bm-line-plot-container,
+.bm-hist-plot-container,
+.bm-dens-line-plot-container,
+.bm-dens-table-plot-container{
+  position: relative;
+  -webkit-appearance: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/*
+# =========
+# =====================
+# =====================================
+# ===================================================================================
+# ===================================================================================
+// BROWNIAN MOTION
+*/
+.bm-plot-content-wrapper{
+  width: 100%;
+  min-height: 575px;
+  margin: 0 auto;
+  border-radius: 30px 30px 30px 30px;
+}
+.bm-line-plot-container {
+  display: inline-block;
+  margin: 0 auto;
+  width: 70%;
+  height: 500px;
+}
+.bm-hist-plot-container {
+  display: inline-block;
+  margin: 0 auto;
+  width: 29%;
+  height: 500px;
+}
+.bm-input-section {
+  margin: 0 auto;
+  text-align: center;
+}
+.bm-input-section button{
+  margin-bottom: 10px;
+}
+/*
+# =========
+# =====================
+# =====================================
+# ===================================================================================
+# ===================================================================================
+# DENSITY ANALYSIS
+*/
+.bm-dens-plot-content-wrapper{
+  width: 100%;
+  min-height: 575px;
+  margin: 0 auto;
+  border-radius: 30px 30px 30px 30px;
+}
+.bm-dens-line-plot-container {
+  display: inline-block;
+  margin: 0 auto;
+  width: 70%;
+  height: 500px;
+}
+.bm-dens-table-plot-container {
+  display: inline-block;
+  margin: 0 auto;
+  width: 29%;
+  height: 500px;
+}
+.bm-dens-input-section {
+  margin: 0 auto;
+  text-align: center;
+}
+.bm-dens-input-section button{
+  margin-bottom: 10px;
+}
+
+
+
+
+/* 
+
+.random-walks-plot-content-wrapper{
+  margin:0 auto;
+  min-height: 550px;
+  width:80%;
+  border-radius: 30px 30px 30px 30px;
+}
+.random-walks-plot-wrapper {
+  margin: 0 auto;
+  width: 100%;
+  height: 500px;
+}
+.random-walks-plot-container {
+  margin: 0 auto;
+  width: 95%;
+  height: 100%;
+}
+.random-walks-input-section {
+  margin: 0 auto;
+  width: 100%;
+  text-align: center;
+}
+.random-walks-input-section button{
+  margin-bottom: 10px;
+}
+
+# =========
+# =====================
+# =====================================
+# ===================================================================================
+# ===================================================================================
+
+
+.random-walks2d-content {
+  width: 100%;
+  margin: 0 auto;
+}
+.random-walks2d-content-infobox {
+  padding: 30px;
+}
+.random-walks2d-plot-content-wrapper {
+  margin: 0 auto;
+  width: 700px;
+  height: 760px;
+  border-radius: 30px 30px 30px 30px;
+}
+.random-walks2d-plot-container {
+  width: 700px;
+  height: 700px;
+}
+.random-walks2d-input-section {
+  margin: 0 auto;
+  text-align: center;
+  width: 700px;
+  height: 60px;
+}
+
+@media only screen and (min-width: 1250px) {
+  .rw-left-container,
+  .rw-right-container {
+    display: inline-block;
+    vertical-align: top;
+  }
+  .rw-left-container {
+    width: 40%;
+  }
+  .rw-right-container {
+    width: 55%;
+    margin-left: 20px;
+  }
+}
+@media only screen and (min-width: 1450px) {
+  .rw-left-container {
+    width: 45%;
+    margin-left: 50px;
+  }
+  .rw-right-container {
+    width: 50%;
+    margin: 0 auto;
+  }
+}
+
+
+# =========
+# =====================
+# =====================================
+# ===================================================================================
+# ===================================================================================
+
+
+.ddiff-content {
+  width: 100%;
+  margin: 0 auto;
+}
+.ddiff-content-infobox {
+  padding: 30px;
+}
+.ddiff-plot-wrapper {
+  margin: 0 auto;
+  width: 600px;
+  height: 660px;
+  border-radius: 30px 30px 30px 30px;
+}
+.ddiff-plot-container {
+  width: 600px;
+  height: 600px;
+}
+.ddiff-input-section {
+  text-align: center;
+}
+.ddiff-plot-content-wrapper {
+  margin: 0 auto;
+}
+@media only screen and (max-width: 1250px) {
+  .ddiff-content,
+  .ddiff-left-container,
+  .ddiff-right-container {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
+
+  .ddiff-left-container {
+    -webkit-box-ordinal-group: 2;
+  }
+
+  .ddiff-right-container {
+    -webkit-box-ordinal-group: 1;
+  }
+}
+@media only screen and (min-width: 1250px) {
+  .ddiff-left-container,
+  .ddiff-right-container {
+    display: inline-block;
+    vertical-align: top;
+  }
+  .ddiff-left-container {
+    width: 55%;
+  }
+  .ddiff-right-container {
+    width: 39%;
+    margin-left: 20px;
+  }
+}
+
+@media only screen and (min-width: 1450px) {
+}
+@media only screen and (min-width: 1680px) {
+}
+
+/*
+@media only screen and (min-width: 1450px) {
+  .rw-left-container{
+    width:45%;
+  }
+}
+@media only screen and (min-width: 1600px) {
+  .rw-right-container{
+  margin: 0 auto;
+  width:50%;
+  }
+}
+ */
+
+/* DISPLAYING OPTIONS */ /*
+@media only screen and (min-width: 1100px) {
+  .ddiff-plot-content-wrapper{
+    display: inline-block;
+  }
+
+  .ddiff-content-infobox{
+    display: inline-block;
+    margin-left: 30px;
+    width:33%;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .ddiff-content{
+    display: inline-block;
+    margin: 0 auto;
+  }
+  .ddiff-content-infobox{
+    width:38%;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .ddiff-content-infobox{
+    width:40%;
+  }
+}
+
+@media only screen and (min-width: 1300px){
+
+  .random-walks2d-plot-content-wrapper{
+    vertical-align: top;
+    display: inline-block;
+  }
+
+  .random-walks2d-content-infobox{
+    display: inline-block;
+    width:33%;
+  }
+}
+@media only screen and (min-width: 1350px){
+  .random-walks2d-content-infobox{
+    width:35%;
+  }
+}
+@media only screen and (min-width: 1400px){
+  .random-walks2d-content-infobox{
+    width:37%;
+  }
+}
+
+@media only screen and (min-width: 1450px) {
+  .random-walks2d-content-infobox{
+    width:40%;
+    margin: 0 auto;
+  }
+  .ddiff-plot-content-wrapper{
+    width:50%
+  }
+  .ddiff-content-infobox{
+    width:40%;
+  }
+}
+
+@media only screen and (min-width: 1550px) {
+  .random-walks2d-content-infobox{
+    width:40%;
+  }
+  .random-walks2d-plot-content-wrapper{
+    width:49%;
+    margin:0 auto;
+  }
+}
+*/
