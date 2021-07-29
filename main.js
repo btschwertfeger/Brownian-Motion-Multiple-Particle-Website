@@ -53,7 +53,7 @@ function dynamicColors() {
     let r = Math.floor(Math.random() * 255);
     let g = Math.floor(Math.random() * 255);
     let b = Math.floor(Math.random() * 255);
-    return "rgba(" + r + "," + g + "," + b + ", 0.5)";
+    return "rgba(" + r + "," + g + "," + b + ", 0.9)";
 }
 
 function poolColors(a) {
@@ -89,9 +89,9 @@ window.bm_default_input = {
     c: 0,
     d: -0.001,
     Nparticle: 1000, // number of particles
-    T: 500, //500 integration time in time units
+    T: 1000, //500 integration time in time units
     h: 0.5, //step size in time units
-    nlines: 5,
+    nlines: 1,
 }
 
 window.bm_active_values = {};
@@ -108,7 +108,7 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
     let x = [...new Array(input.Nparticle)].map(() => [...new Array(N)].map(() => 10))
     // OR 
     // R: // #x<-matrix(rnorm(Nparticle)*10,Nparticle,N) # Initial condition,
-    //let x = [...new Array(input.Nparticle)].map(() => [...new Array(N)].map(() => rnorm() * 10))
+    // let x = [...new Array(input.Nparticle)].map(() => [...new Array(N)].map(() => rnorm() * 10))
 
     for (let row = 0; row < input.Nparticle; row++) {
         for (let i = 0; i < N - 1; i++) {
@@ -147,10 +147,12 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
     }
 
     if (densityAnalysis) {
-        const bars = 40
+        const bars = 40;
         let h = [...new Array(N)].map(() => [...new Array(bars)].map(() => 0)),
             hstat = [...new Array(N)].map(() => 0),
             bin_brakes = [...new Array(bars + 1)].map((elem, index) => (index - bars / 2) * ama / 10);
+
+        // console.log(hstat)
 
         //Setup Bins
         let default_bins = []
@@ -159,30 +161,31 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
                 binNum: i,
                 minNum: bin_brakes[i],
                 maxNum: bin_brakes[i + 1],
-                count: 0
+                count: 0,
             })
         }
 
-        // ASSIGN ALL VALUES TO THEIR BINS
-        for (let line = 0; line < N; line++) {
-            let bins = JSON.parse(JSON.stringify(default_bins));
+        // console.log("bins: ", default_bins)
 
-            // Loop through data and add to bin's count
-            for (let i = 0; i < x.length; i++) {
-                // console.log(x[line][i])
-                let val = x[i][line];
-                for (let j = 0; j < bins.length; j++) {
-                    let bin = bins[j];
-                    if (val > bin.minNum && val <= bin.maxNum) {
-                        bin.count++;
+        // ASSIGN ALL VALUES TO THEIR BINS
+        for (let step = 0; step < N; step++) { // loop over all timesteps
+            let bins = JSON.parse(JSON.stringify(default_bins))
+            for (let particle = 0; particle < input.Nparticle; particle++) { // loop over all particles
+                let val = x[particle][step];
+                for (let bin = 0; bin < bins.length; bin++) {
+                    let this_bin = bins[bin];
+                    if (val > this_bin.minNum && val <= this_bin.maxNum) {
+                        this_bin.count++;
                         break; // An item can only be in one bin.
                     }
                 }
             }
-            h[line] = bins.map((elem) => elem.count);
+            h[step] = bins.map((elem) => elem.count);
         }
-        // console.log(h)
-        for (let i = N / 2; i < N; i++) {
+
+        console.log("h: ", h)
+
+        for (let i = 0; i < N; i++) {
             for (let j = 0, hstat_idx = 0; hstat_idx < N; hstat_idx++, j++) {
                 if (j == bars) {
                     j = 0;
@@ -195,11 +198,43 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
         }
 
         // console.log(hstat)
+
+        function table(d) {
+            let table = {
+                "values": new Array(),
+                "counts": new Array(),
+            }
+            for (let entry = 0; entry < d.length; entry++) {
+                let val = d[entry];
+                if (table.values.includes(val)) {
+                    table.counts[table.values.indexOf(val)]++;
+                } else {
+                    table.values.push(val);
+                    table.counts.push(1);
+                }
+            }
+            let res = {
+                values: table.values.sort(function (a, b) {
+                    return a - b;
+                }),
+                counts: table.counts,
+            };
+
+            for (let entry = 0; entry < table.values.length; entry++) {
+                res.counts[entry] = table.counts[table.values.indexOf(res.values[entry])];
+            }
+
+            console.log(res)
+            return res;
+        }
+        // const tableData = table(hstat);
+        // console.log(tableData)
+        window.bm_active_values.dens_tableData = table(hstat);
+
         window.bm_active_values.h = h;
         window.bm_active_values.hstat = hstat;
+        console.log("hstat: ", hstat)
     }
-
-
     return window.bm_active_values;
 }
 
@@ -210,9 +245,8 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
 # =====================================
 # ===================================================================================
 # ===================================================================================
-# BROWNIAN MOTION
+# BROWNIAN MOTION FIRST PLOTS
 */
-
 
 function createBMDatasets(input) {
     const RESULT = calculateBM(input);
@@ -224,9 +258,11 @@ function createBMDatasets(input) {
     const LINES = input.nlines;
 
     // HISTOGRAM
+
     const ymin = RESULT.ami,
-        ymax = RESULT.ama;
-    const interval = 1 //(ymax + ymin) / 25;
+        ymax = RESULT.ama,
+        bars = 25;
+    const interval = (ymax - ymin) / bars;
 
     let bins = [],
         binCount = 0;
@@ -486,23 +522,58 @@ function updateBM_plots(input) {
 # =====================================
 # ===================================================================================
 # ===================================================================================
-# DENSITY ANALYSIS
+# BM DENSITY ANALYSIS
 */
 
 function createBM_density_Datasets(input) {
     const RESULT = calculateBM(input, densityAnalysis = true);
+
+    // LINE CHART DATA
+    let line_data = RESULT.hstat,
+        t = RESULT.t;
+
+    line_data = [...new Array(40)].map((e, i) => line_data[i]);
+    t = [...new Array(40)].map((e, i) => t[i]);
+
+    // TABLE CHART DATA
+    let tableData = RESULT.dens_tableData;
+    // console.log("!: ", tableData)
+    // console.log(tableData.counts, tableData.values)
+
+
+
+    let BM_DENS_TABLE_CHART_DATASETS = new Array();
+    for (let entry = 0; entry < tableData.counts.length; entry++) {
+        BM_DENS_TABLE_CHART_DATASETS.push({
+            data: [{
+                x: tableData.values[entry],
+                y: 0,
+            }, {
+                x: tableData.values[entry],
+                y: tableData.counts[entry],
+            }],
+            backgroundColor: 'red',
+            showLine: true,
+            pointRadius: 0,
+            borderColor: 'red',
+
+        });
+    }
+
     return {
         BM_DENSE_LINE_CHART_DATASET: {
             yAxisID: 'y',
             xAxisID: 'x',
-            data: RESULT.hstat,
+            data: line_data,
             fill: false,
-            borderColor: dynamicColors(),
+            borderColor: "orange",
             pointRadius: 0,
             type: 'line',
             linewidth: 1,
         },
-        t: RESULT.t,
+        t: t,
+        BM_DENS_TABLE_CHART_DATASETS: BM_DENS_TABLE_CHART_DATASETS,
+        tableTicks: tableData.values,
     }
 }
 
@@ -511,8 +582,8 @@ function default_BM_dens_plots(input = window.bm_default_input) {
       # ----- ---- ---- ---- DENSITY ANALYSIS
       */
     const RESULT = createBM_density_Datasets(input)
-    console.log(RESULT.t)
-    document.getElementById('bm_dens_line_plot').remove();
+
+    // LINE PLOT
     document.getElementById('bm_dens_line_plot_container').innerHTML = '<canvas id="bm_dens_line_plot"></canvas>';
     let ctx1 = document.getElementById('bm_dens_line_plot');
     const config1 = {
@@ -554,7 +625,7 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                     display: true,
                     title: {
                         display: true,
-                        text: 'y',
+                        text: 'hstat[]',
                         font: {
                             family: 'Helvetica',
                             size: 16
@@ -581,6 +652,100 @@ function default_BM_dens_plots(input = window.bm_default_input) {
     };
     window.bm_dens_line_plot = new Chart(ctx1, config1);
 
+    // TABLE PLOT
+    document.getElementById('bm_dens_table_plot_container').innerHTML = '<canvas id="bm_dens_table_plot"></canvas>';
+    let ctx2 = document.getElementById('bm_dens_table_plot');
+    const ticks = RESULT.tableTicks;
+    const config2 = {
+        type: 'scatter',
+        data: {
+            datasets: RESULT.BM_DENS_TABLE_CHART_DATASETS,
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Density of density?',
+                    font: {
+                        Family: 'Helvetica',
+                        size: 18
+                    }
+                },
+                legend: {
+                    position: 'top',
+                    display: false,
+                },
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'value',
+                        font: {
+                            family: 'Helvetica',
+                            size: 16,
+                        },
+                    },
+                    ticks: {
+                        // min: ticks[0],
+                        // max: ticks[ticks.length - 1],
+
+                        // forces step size to be 5 units
+                        stepSize: .01 // <----- This prop sets the stepSize
+                    }
+
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Density',
+                        font: {
+                            family: 'Helvetica',
+                            size: 16
+                        },
+                    },
+                },
+            },
+
+            // animations: {
+            //     radius: {
+            //         duration: 400,
+            //         easing: 'linear',
+            //         loop: (ctx) => ctx.activate
+            //     }
+            // },
+            // hoverRadius: 8,
+            // hoverBackgroundColor: 'yellow',
+            // interaction: {
+            //     mode: 'nearest',
+            //     intersect: false,
+            //     axis: 'x'
+            // }
+        }
+    };
+    window.bm_dens_table_plot = new Chart(ctx2, config2);
+}
+
+function updateBM_dens_plots(input) {
+    // this updates the plot with new values from slider input
+    let line_chart = window.bm_dens_line_plot;
+    let table_chart = window.bm_dens_table_plot;
+    let values = JSON.parse(JSON.stringify(window.bm_default_input));
+    values.T = input.T;
+    values.d = input.d;
+
+    const RESULT = createBM_density_Datasets(values);
+
+    line_chart.data.labels = RESULT.t;
+    line_chart.data.datasets = [RESULT.BM_DENSE_LINE_CHART_DATASET];
+    line_chart.update()
+
+    table_chart.data.datasets = RESULT.BM_DENS_TABLE_CHART_DATASETS;
+    table_chart.update()
 }
 /*
 # =========
