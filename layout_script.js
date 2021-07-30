@@ -1,4 +1,13 @@
 /*
+<!--
+    ########################################
+    ## @author Benjamin Thomas Schwertfeger (July 2021)
+    ## copyright by Benjamin Thomas Schwertfeger (July 2021)
+    ############ 
+-->
+*/
+
+/*
 # =========
 # =====================
 # =====================================

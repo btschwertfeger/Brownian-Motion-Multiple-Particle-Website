@@ -1,3 +1,12 @@
+/*
+<!--
+    ########################################
+    ## @author Benjamin Thomas Schwertfeger (July 2021)
+    ## copyright by Benjamin Thomas Schwertfeger (July 2021)
+    ############ 
+-->
+*/
+
 :root {
   --primary-bg-color: white;
   --primary-font-color: black;
@@ -191,7 +200,8 @@ a:hover {
   font-size: 18px;
 }
 .bm-input-section button{
-  margin-bottom: 10px;
+  margin-top: 15px;
+  vertical-align: top;
 }
 /*
 # =========
@@ -224,9 +234,13 @@ a:hover {
   margin: 0 auto;
   text-align: center;
   font-size: 18px;
+  border-radius: 30px 30px 30px 30px;
+  box-shadow: 16px 16px 32px #969696, -16px -16px 32px #ffffff;
 }
 .bm-dens-input-section button{
-  margin-bottom: 10px;
+  margin-top: 15px;
+  vertical-align: top;
+  /* box-shadow: 8px 8px 16px #969696, -8px -8px 16px #ffffff; */
 }
 
 /* ----- ----- ----  */
@@ -240,7 +254,7 @@ a:hover {
 }
 
 .row-wrapper{
-  width:100%;
+  width:95%;
   margin:0 auto;
   font-size: 0;
 }
@@ -253,7 +267,6 @@ a:hover {
   /* margin: 0; */
   width:50%;
   height: 200px;
-  background-color: #969696;
   border-radius: 30px 30px 30px 30px;
   display: inline-block;
   /* font-size: 0; */

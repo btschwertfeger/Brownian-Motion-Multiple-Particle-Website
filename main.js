@@ -1,4 +1,13 @@
 /*
+<!--
+    ########################################
+    ## @author Benjamin Thomas Schwertfeger (July 2021)
+    ## copyright by Benjamin Thomas Schwertfeger (July 2021)
+    ############ 
+-->
+*/
+
+/*
 # =========
 # =====================
 # =====================================
@@ -6,6 +15,7 @@
 # ===================================================================================
 // General functions
 */
+
 
 const cumulativeSum = (sum => value => sum += value)(0);
 
@@ -53,7 +63,7 @@ function dynamicColors() {
     let r = Math.floor(Math.random() * 255);
     let g = Math.floor(Math.random() * 255);
     let b = Math.floor(Math.random() * 255);
-    return "rgba(" + r + "," + g + "," + b + ", 0.9)";
+    return "rgba(" + r + "," + g + "," + b + ", 1)";
 }
 
 function poolColors(a) {
@@ -89,8 +99,8 @@ window.bm_default_input = {
     c: 0,
     d: -0.001,
     Nparticle: 1000, // number of particles
-    T: 1000, //500 integration time in time units
-    h: 0.5, //step size in time units
+    T: 1000, // integration time in time units
+    h: 0.5, // step size in time units
     nlines: 1,
 }
 
@@ -149,7 +159,7 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
     if (densityAnalysis) {
         const bars = 40;
         let h = [...new Array(N)].map(() => [...new Array(bars)].map(() => 0)),
-            hstat = [...new Array(N)].map(() => 0),
+            hstat = [...new Array(bars)].map(() => 0), //[...new Array(N)].map(() => 0),
             bin_brakes = [...new Array(bars + 1)].map((elem, index) => (index - bars / 2) * ama / 10);
 
         // console.log(hstat)
@@ -183,21 +193,26 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
             h[step] = bins.map((elem) => elem.count);
         }
 
-        console.log("h: ", h)
+        console.log("h: ", h) // <-- HIST DATA
 
-        for (let i = 0; i < N; i++) {
-            for (let j = 0, hstat_idx = 0; hstat_idx < N; hstat_idx++, j++) {
-                if (j == bars) {
-                    j = 0;
-                }
-                hstat[hstat_idx] = h[i][j] + hstat[hstat_idx];
+        // for (let i = 0; i < N; i++) {
+        //     for (let j = 0, hstat_idx = 0; hstat_idx < N; hstat_idx++, j++) {
+        //         if (j == bars) {
+        //             j = 0;
+        //         }
+        //         hstat[hstat_idx] = h[i][j] + hstat[hstat_idx];
+        //     }
+        // }
+        for (let i = (N / 2) - 1; i < N; i++) {
+            for (let j = 0; j < bars; j++) {
+                hstat[j] = h[i][j] + hstat[j];
             }
         }
         for (let i = 0; i < hstat.length; i++) {
             hstat[i] = hstat[i] * 2 / input.Nparticle / N;
         }
 
-        // console.log(hstat)
+        // console.log(hstat) // <-- HIST STATOSTIC DATA
 
         function table(d) {
             let table = {
@@ -224,7 +239,7 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
                 res.counts[entry] = table.counts[table.values.indexOf(res.values[entry])];
             }
 
-            console.log(res)
+            console.log(res) // <-- TABLES
             return res;
         }
         // const tableData = table(hstat);
@@ -525,6 +540,10 @@ function updateBM_plots(input) {
 # BM DENSITY ANALYSIS
 */
 
+window.bm_dens_line_1of6 = {}, window.bm_dens_line_1of6 = {},
+    window.bm_dens_line_3of6 = {}, window.bm_dens_line_4of6 = {},
+    window.bm_dens_line_5of6 = {}, window.bm_dens_line_6of6 = {};
+
 function createBM_density_Datasets(input) {
     const RESULT = calculateBM(input, densityAnalysis = true);
 
@@ -532,16 +551,25 @@ function createBM_density_Datasets(input) {
     let line_data = RESULT.hstat,
         t = RESULT.t;
 
-    line_data = [...new Array(40)].map((e, i) => line_data[i]);
-    t = [...new Array(40)].map((e, i) => t[i]);
+    // to have only one 
+    // line_data = [...new Array(40)].map((e, i) => line_data[i]);
+    // t = [...new Array(40)].map((e, i) => t[i]);
+
+    const BM_DENSE_LINE_CHART_DATASET = {
+        yAxisID: 'y',
+        xAxisID: 'x',
+        data: line_data,
+        fill: false,
+        borderColor: "orange",
+        pointRadius: 0,
+        type: 'line',
+        linewidth: 1,
+    };
+
 
     // TABLE CHART DATA
     let tableData = RESULT.dens_tableData;
-    // console.log("!: ", tableData)
-    // console.log(tableData.counts, tableData.values)
-
-
-
+    // console.log("!: ", tableData); console.log(tableData.counts, tableData.values)
     let BM_DENS_TABLE_CHART_DATASETS = new Array();
     for (let entry = 0; entry < tableData.counts.length; entry++) {
         BM_DENS_TABLE_CHART_DATASETS.push({
@@ -559,21 +587,87 @@ function createBM_density_Datasets(input) {
 
         });
     }
-
-    return {
-        BM_DENSE_LINE_CHART_DATASET: {
+    // console.log("!", [...new Array(RESULT.h[0].length)].map((elem, index) =>
+    //     RESULT.h[0][index] / RESULT.Nparticle))
+    // NOW THE SIX DENSITY LINE PLOTS
+    const BM_DENS_LINE_1of6_DATASET = {
             yAxisID: 'y',
             xAxisID: 'x',
-            data: line_data,
+            data: [...new Array(RESULT.h[0].length)].map((elem, index) =>
+                RESULT.h[0][index] / RESULT.Nparticle),
             fill: false,
             borderColor: "orange",
             pointRadius: 0,
             type: 'line',
             linewidth: 1,
         },
+        BM_DENS_LINE_2of6_DATASET = {
+            yAxisID: 'y',
+            xAxisID: 'x',
+            data: [...new Array(RESULT.h[0].length)].map((elem, index) =>
+                RESULT.h[1][index] / RESULT.Nparticle),
+            fill: false,
+            borderColor: "orange",
+            pointRadius: 0,
+            type: 'line',
+            linewidth: 1,
+        },
+        BM_DENS_LINE_3of6_DATASET = {
+            yAxisID: 'y',
+            xAxisID: 'x',
+            data: [...new Array(RESULT.h[0].length)].map((elem, index) =>
+                RESULT.h[3][index] / RESULT.Nparticle),
+            fill: false,
+            borderColor: "orange",
+            pointRadius: 0,
+            type: 'line',
+            linewidth: 1,
+        },
+        BM_DENS_LINE_4of6_DATASET = {
+            yAxisID: 'y',
+            xAxisID: 'x',
+            data: [...new Array(RESULT.h[0].length)].map((elem, index) =>
+                RESULT.h[7][index] / RESULT.Nparticle),
+            fill: false,
+            borderColor: "orange",
+            pointRadius: 0,
+            type: 'line',
+            linewidth: 1,
+        },
+        BM_DENS_LINE_5of6_DATASET = {
+            yAxisID: 'y',
+            xAxisID: 'x',
+            data: [...new Array(RESULT.h[0].length)].map((elem, index) =>
+                RESULT.h[(RESULT.N / 2) - 1][index] / RESULT.Nparticle),
+            fill: false,
+            borderColor: "orange",
+            pointRadius: 0,
+            type: 'line',
+            linewidth: 1,
+        },
+        BM_DENS_LINE_6of6_DATASET = {
+            yAxisID: 'y',
+            xAxisID: 'x',
+            data: [...new Array(RESULT.h[0].length)].map((elem, index) =>
+                RESULT.h[RESULT.N - 1][index] + (RESULT.h[RESULT.N - 2][index]) / RESULT.Nparticle / 2),
+            fill: false,
+            borderColor: "orange",
+            pointRadius: 0,
+            type: 'line',
+            linewidth: 1,
+        };
+
+    return {
+        BM_DENSE_LINE_CHART_DATASET: BM_DENSE_LINE_CHART_DATASET,
         t: t,
         BM_DENS_TABLE_CHART_DATASETS: BM_DENS_TABLE_CHART_DATASETS,
         tableTicks: tableData.values,
+        BM_DENS_LINE_1of6_DATASET: BM_DENS_LINE_1of6_DATASET,
+        BM_DENS_LINE_2of6_DATASET: BM_DENS_LINE_2of6_DATASET,
+        BM_DENS_LINE_3of6_DATASET: BM_DENS_LINE_3of6_DATASET,
+        BM_DENS_LINE_4of6_DATASET: BM_DENS_LINE_4of6_DATASET,
+        BM_DENS_LINE_5of6_DATASET: BM_DENS_LINE_5of6_DATASET,
+        BM_DENS_LINE_6of6_DATASET: BM_DENS_LINE_6of6_DATASET,
     }
 }
 
@@ -583,13 +677,15 @@ function default_BM_dens_plots(input = window.bm_default_input) {
       */
     const RESULT = createBM_density_Datasets(input)
 
+
+    const LABELS = [...new Array(RESULT.BM_DENSE_LINE_CHART_DATASET.data.length)].map((elem, i) => i);
     // LINE PLOT
     document.getElementById('bm_dens_line_plot_container').innerHTML = '<canvas id="bm_dens_line_plot"></canvas>';
     let ctx1 = document.getElementById('bm_dens_line_plot');
     const config1 = {
         type: 'line',
         data: {
-            labels: RESULT.t,
+            labels: LABELS, //RESULT.t,
             datasets: [RESULT.BM_DENSE_LINE_CHART_DATASET],
         },
         options: {
@@ -598,7 +694,7 @@ function default_BM_dens_plots(input = window.bm_default_input) {
             plugins: {
                 title: {
                     display: true,
-                    text: '???',
+                    text: ' ',
                     font: {
                         Family: 'Helvetica',
                         size: 18
@@ -728,24 +824,141 @@ function default_BM_dens_plots(input = window.bm_default_input) {
         }
     };
     window.bm_dens_table_plot = new Chart(ctx2, config2);
+
+
+    // NOW THESE SIX PLOTS
+    const SIX_DATASETS = [
+            RESULT.BM_DENS_LINE_1of6_DATASET, RESULT.BM_DENS_LINE_2of6_DATASET,
+            RESULT.BM_DENS_LINE_3of6_DATASET, RESULT.BM_DENS_LINE_4of6_DATASET,
+            RESULT.BM_DENS_LINE_5of6_DATASET, RESULT.BM_DENS_LINE_6of6_DATASET
+        ],
+        SIX_container_ids = [
+            "bm_line_1_plot_container", "bm_line_2_plot_container",
+            "bm_line_3_plot_container", "bm_line_4_plot_container",
+            "bm_line_5_plot_container", "bm_line_6_plot_container"
+        ],
+        SIX_plot_ids = [
+            "bm_line_1_plot", "bm_line_2_plot", "bm_line_3_plot",
+            "bm_line_4_plot", "bm_line_5_plot", "bm_line_6_plot"
+        ],
+        yLabels = [
+            "h[1,]/Nparticle", "h[2,]/Nparticle", "h[4,]/Nparticle",
+            "h[8,]/Nparticle", "h[N/2,]/Nparticle", "(h[N-1,]+h[N-2,])/Nparticle/2"
+        ]
+    let six_charts = new Array(SIX_DATASETS.length);
+
+    for (let entry = 0; entry < SIX_DATASETS.length; entry++) {
+        document.getElementById(SIX_container_ids[entry]).innerHTML = '<canvas id="' + SIX_plot_ids[entry] + '"></canvas>';
+        const ctx = document.getElementById(SIX_plot_ids[entry]),
+            config = {
+                type: 'line',
+                data: {
+                    labels: LABELS,
+                    datasets: [SIX_DATASETS[entry]],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: yLabels[entry],
+                            font: {
+                                Family: 'Helvetica',
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            position: 'top',
+                            display: false,
+                        },
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'index',
+                                font: {
+                                    family: 'Helvetica',
+                                    size: 14,
+                                }
+                            },
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: yLabels[entry],
+                                font: {
+                                    family: 'Helvetica',
+                                    size: 14,
+                                },
+                            },
+                        },
+                    },
+
+                    animations: {
+                        radius: {
+                            duration: 400,
+                            easing: 'linear',
+                            loop: (ctx) => ctx.activate
+                        }
+                    },
+                    hoverRadius: 8,
+                    hoverBackgroundColor: 'yellow',
+                    interaction: {
+                        mode: 'nearest',
+                        intersect: false,
+                        axis: 'x'
+                    }
+                }
+            };
+
+        six_charts[entry] = new Chart(ctx, config)
+    }
+    window.bm_dens_line_1of6 = six_charts[0],
+        window.bm_dens_line_2of6 = six_charts[1],
+        window.bm_dens_line_3of6 = six_charts[2],
+        window.bm_dens_line_4of6 = six_charts[3],
+        window.bm_dens_line_5of6 = six_charts[4],
+        window.bm_dens_line_6of6 = six_charts[5];
+
 }
 
 function updateBM_dens_plots(input) {
     // this updates the plot with new values from slider input
-    let line_chart = window.bm_dens_line_plot;
-    let table_chart = window.bm_dens_table_plot;
     let values = JSON.parse(JSON.stringify(window.bm_default_input));
     values.T = input.T;
     values.d = input.d;
 
     const RESULT = createBM_density_Datasets(values);
 
-    line_chart.data.labels = RESULT.t;
+    let line_chart = window.bm_dens_line_plot;
+    line_chart.data.labels = [...new Array(RESULT.BM_DENSE_LINE_CHART_DATASET.data.length)].map((elem, i) => i);;
     line_chart.data.datasets = [RESULT.BM_DENSE_LINE_CHART_DATASET];
     line_chart.update()
 
+    let table_chart = window.bm_dens_table_plot;
     table_chart.data.datasets = RESULT.BM_DENS_TABLE_CHART_DATASETS;
     table_chart.update()
+
+    // NOW THIS SIX PLOTS
+    const SIX_DATASETS_res = [
+        RESULT.BM_DENS_LINE_1of6_DATASET, RESULT.BM_DENS_LINE_2of6_DATASET,
+        RESULT.BM_DENS_LINE_3of6_DATASET, RESULT.BM_DENS_LINE_4of6_DATASET,
+        RESULT.BM_DENS_LINE_5of6_DATASET, RESULT.BM_DENS_LINE_6of6_DATASET
+    ];
+    let six_charts = [
+        window.bm_dens_line_1of6, window.bm_dens_line_2of6,
+        window.bm_dens_line_3of6, window.bm_dens_line_4of6,
+        window.bm_dens_line_5of6, window.bm_dens_line_6of6,
+    ];
+    for (let entry = 0; entry < six_charts.length; entry++) {
+        let chart = six_charts[entry];
+        chart.data.datasets = [SIX_DATASETS_res[entry]]
+        chart.update()
+    }
 }
 /*
 # =========

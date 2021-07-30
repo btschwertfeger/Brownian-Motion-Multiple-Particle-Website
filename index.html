@@ -17,30 +17,27 @@
         <!-- CHART JS -->
         <script
             src='https://cdn.jsdelivr.net/npm/chart.js@3.3.1/dist/chart.min.js'> </script>
-        <!-- TO ZOOM INTO CHARTS -->
-        <!-- <script src="node_modules/hammerjs/hammer.min.js"></script>
-        <script
-            src="node_modules/chartjs-plugin-zoom/dist/chartjs-plugin-zoom.min.js"></script> -->
-        <!-- MATHEMATICAL SIGNS -->
         <script id="MathJax-script" async
             src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
         </script>
     </head>
     <body>
         <div class="main">
+            <div class="placeholder"
+                style="width:100%;height:42px"></div>
             <div class="headline" style="text-align:center;">
-                <h1>HEADLINE</h1><br>
+                <h1>Brownian Motion</h1><br>
             </div>
 
             <!-- BROWNIAN MOTION -->
             <div class="bm-wrapper">
-                <div class="headline2">
-                    <h2>Brownian Motion</h2>
-                </div>
+                <!-- <div class="headline2">
+                    <h2></h2>
+                </div> -->
                 <div class="description">
                     <h4>General</h4>
                     <p>
-                        trlali, tralala, alles ist so wunderbar
+                        SOME NICE TEXT
                     </p>
 
                 </div>
@@ -59,7 +56,7 @@
                     <div id="bm_input_section"
                         class="bm-input-section">
                         <div class="bm-input-wrapper input-wrapper">
-                            <div>\(d\) (growth / decacy rate)</div>
+                            <div>\(d\)</div>
                             <div id="bm_d_value"
                                 name="bm_slide_value"
                                 class="bm-slide-value slide-value">-0.001</div>
@@ -97,15 +94,14 @@
                         <button class="someBtn" id="bm_againBtn">Again</button>
                         <button class="someBtn" id="bm_resetBtn">Reset</button>
                     </div>
-
                 </div>
 
 
-                <div class="placeholder" style="width:100%;height:50px;"></div>
+                <div class="placeholder" style="width:100%;height:42px;"></div>
                 <div class="description">
                     <h4>Analysis of the densities</h4>
                     <p>
-                        trlali, tralala, alles ist so wunderbar
+                        WHAT IS GOING ON HERE
                     </p>
 
                 </div>
@@ -113,19 +109,10 @@
 
                 <!-- BROWNIAN MOTION DENSITY ANALYSIS PART 1 -->
                 <div class="bm-dens-plot-content-wrapper">
-                    <div id="bm_dens_line_plot_container"
-                        class="bm-dens-line-plot-container">
-                        <canvas id="bm_dens_line_plot" class="canvas"></canvas>
-                    </div>
-                    <div id="bm_dens_table_plot_container"
-                        class="bm-dens-table-plot-container">
-                        <canvas id="bm_dens_table_plot" class="canvas"></canvas>
-                    </div>
-
                     <div id="bm_dens_input_section"
                         class="bm-dens-input-section">
                         <div class="bm-dens-input-wrapper input-wrapper">
-                            <div>\(d\) (growth / decacy rate)</div>
+                            <div>\(d\)</div>
                             <div id="bm_dens_d_value"
                                 name="bm_dens_slide_value"
                                 class="bm-dens-slide-value slide-value">-0.001</div>
@@ -151,9 +138,20 @@
                         <button class="someBtn" id="bm_dens_againBtn">Again</button>
                         <button class="someBtn" id="bm_dens_resetBtn">Reset</button>
                     </div>
-                </div>
-                <div class="placeholder" style="width:100%;height:50px;"></div>
-                <div class="bm-dens-add-plot-content-wrapper">
+                    <div class="placeholder"
+                        style="width:100%;height:40px"></div>
+                    <div id="bm_dens_line_plot_container"
+                        class="bm-dens-line-plot-container">
+                        <canvas id="bm_dens_line_plot" class="canvas"></canvas>
+                    </div>
+                    <div id="bm_dens_table_plot_container"
+                        class="bm-dens-table-plot-container">
+                        <canvas id="bm_dens_table_plot" class="canvas"></canvas>
+                    </div>
+
+
+
+
                     <!-- THE 6 ADDITIONAL PLOTS -->
                     <div class="row-wrapper">
                         <div id="bm_line_1_plot_container"
@@ -171,9 +169,33 @@
                             class="bm-line-3-plot-container">
                             <canvas id="bm_line_3_plot" class="canvas"></canvas>
                         </div>
-                        <div id="bm_line_3_plot_container"
-                            class="bm-line-3-plot-container">
-                            <canvas id="bm_line_3_plot" class="canvas"></canvas>
+                        <div id="bm_line_4_plot_container"
+                            class="bm-line-4-plot-container">
+                            <canvas id="bm_line_4_plot" class="canvas"></canvas>
+                        </div>
+                    </div>
+                    <div class="row-wrapper">
+                        <div id="bm_line_5_plot_container"
+                            class="bm-line-5-plot-container">
+                            <canvas id="bm_line_5_plot" class="canvas"></canvas>
+                        </div>
+                        <div id="bm_line_6_plot_container"
+                            class="bm-line-6-plot-container">
+                            <canvas id="bm_line_6_plot" class="canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="placeholder" style="width:100%;height:50px;"></div>
+                <!-- THE 6 ADDITIONAL PLOTS -->
+                <!-- <div class="bm-dens-add-plot-content-wrapper">
+                    <div class="row-wrapper">
+                        <div id="bm_line_1_plot_container"
+                            class="bm-line-1-plot-container">
+                         /div>
+
+                        <div id="bm_line_2_plot_container"
+                            class="bm-line-2-plot-container">
+                            <canvas id="bm_line_2_plot" class="canvas"></canvas>
                         </div>
                     </div>
                     <div class="row-wrapper">
@@ -181,25 +203,37 @@
                             class="bm-line-3-plot-container">
                             <canvas id="bm_line_3_plot" class="canvas"></canvas>
                         </div>
-                        <div id="bm_line_3_plot_container"
-                            class="bm-line-3-plot-container">
-                            <canvas id="bm_line_3_plot" class="canvas"></canvas>
+                        <div id="bm_line_4_plot_container"
+                            class="bm-line-4-plot-container">
+                            <canvas id="bm_line_4_plot" class="canvas"></canvas>
                         </div>
                     </div>
+                    <div class="row-wrapper">
+                        <div id="bm_line_5_plot_container"
+                            class="bm-line-5-plot-container">
+                            <canvas id="bm_line_5_plot" class="canvas"></canvas>
+                        </div>
+                        <div id="bm_line_6_plot_container"
+                            class="bm-line-6-plot-container">
+                            <canvas id="bm_line_6_plot" class="canvas"></canvas>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+   <canvas id="bm_line_1_plot" class="canvas"></canvas>
+                        <
+            <div class="placeholder" style="width:100%;height:100px;"></div>
+        -->
+                <div class="placeholder"
+                    style="width:100%;height:42px;"></div>
+                <div id="footer" style="text-align:center; margin:0 auto; width:
+                    50%;">Copyright © 2021 <a
+                        href="https://www.b-schwertfeger.de">Benjamin
+                        T. Schwertfeger</a>
                 </div>
             </div>
-
             <div class="placeholder" style="width:100%;height:100px;"></div>
-            <div class="placeholder"
-                style="width:100%;height:100px"></div>
-            <div id="footer" style="text-align:center; margin:0 auto; width:
-                50%;">Copyright © 2021 <a
-                    href="https://www.b-schwertfeger.de">Benjamin
-                    T. Schwertfeger</a>
-            </div>
-        </div>
-        <div class="placeholder" style="width:100%;height:100px;"></div>
-        <script src="main.js" async defer></script>
-        <script src="layout_script.js" async defer></script>
-    </body>
-</html>
+            <script src="main.js" async defer></script>
+            <script src="layout_script.js" async defer></script>
+        </body>
+    </html>
