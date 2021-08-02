@@ -82,6 +82,9 @@ function rnorm() {
     return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
 }
 
+function transpose(m) {
+    return m[0].map((x, i) => m.map(x => x[i]));
+}
 /*
 # =========
 # =====================
@@ -102,27 +105,38 @@ window.bm_default_input = {
     T: 1000, // integration time in time units
     h: 0.5, // step size in time units
     nlines: 1,
+    randomStartValue: false,
 }
 
 window.bm_active_values = {};
+window.font_famliy = "Helvetica";
+
+function driving_function(x, a, b, c, d) {
+    return (d * Math.pow(x, 3) + c * Math.pow(x, 2) + b * x - a)
+}
 
 function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
-    function f_fun(y, a, b, c, d) {
-        return (d * Math.pow(y, 3) + c * Math.pow(y, 2) + b * y - a)
-    }
+    /*
+      # ----- ---- ---- ---- Function to calculate all required values 
+    */
+    // function f_fun(y, a, b, c, d) {
+    //     return (d * Math.pow(y, 3) + c * Math.pow(y, 2) + b * y - a)
+    // }
 
     let N = input.T / input.h
-    let t = [...new Array(N)].map((entry, index) => index * input.h)
+    let t = [...new Array(N)].map((entry, index) => index * input.h),
+        x = 0;
 
-    // R: x<-matrix(10,Nparticle,N) # Initial condition, all = 0
-    let x = [...new Array(input.Nparticle)].map(() => [...new Array(N)].map(() => 10))
-    // OR 
-    // R: // #x<-matrix(rnorm(Nparticle)*10,Nparticle,N) # Initial condition,
-    // let x = [...new Array(input.Nparticle)].map(() => [...new Array(N)].map(() => rnorm() * 10))
-
+    if (!input.randomStartValue) {
+        // R: x<-matrix(10,Nparticle,N) # Initial condition, all = 0
+        x = [...new Array(input.Nparticle)].map(() => [...new Array(N)].map(() => 10))
+    } else {
+        // R: // #x<-matrix(rnorm(Nparticle)*10,Nparticle,N) # Initial condition,
+        x = [...new Array(input.Nparticle)].map(() => [...new Array(N)].map(() => rnorm() * 10))
+    }
     for (let row = 0; row < input.Nparticle; row++) {
         for (let i = 0; i < N - 1; i++) {
-            x[row][i + 1] = x[row][i] + input.h * f_fun(x[row][i], input.a, input.b, input.c, input.d) + input.Ca * rnorm() * Math.sqrt(input.h);
+            x[row][i + 1] = x[row][i] + input.h * driving_function(x[row][i], input.a, input.b, input.c, input.d) + input.Ca * rnorm() * Math.sqrt(input.h);
         }
     }
 
@@ -193,16 +207,8 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
             h[step] = bins.map((elem) => elem.count);
         }
 
-        console.log("h: ", h) // <-- HIST DATA
+        // console.log("h: ", h) // <-- HIST DATA
 
-        // for (let i = 0; i < N; i++) {
-        //     for (let j = 0, hstat_idx = 0; hstat_idx < N; hstat_idx++, j++) {
-        //         if (j == bars) {
-        //             j = 0;
-        //         }
-        //         hstat[hstat_idx] = h[i][j] + hstat[hstat_idx];
-        //     }
-        // }
         for (let i = (N / 2) - 1; i < N; i++) {
             for (let j = 0; j < bars; j++) {
                 hstat[j] = h[i][j] + hstat[j];
@@ -239,16 +245,15 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
                 res.counts[entry] = table.counts[table.values.indexOf(res.values[entry])];
             }
 
-            console.log(res) // <-- TABLES
+            // console.log(res) // <-- TABLES
             return res;
         }
-        // const tableData = table(hstat);
+
         // console.log(tableData)
         window.bm_active_values.dens_tableData = table(hstat);
-
         window.bm_active_values.h = h;
         window.bm_active_values.hstat = hstat;
-        console.log("hstat: ", hstat)
+        window.bm_active_values.bin_brakes = bin_brakes;
     }
     return window.bm_active_values;
 }
@@ -264,6 +269,9 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
 */
 
 function createBMDatasets(input) {
+    /*
+      # ----- ---- ---- ---- Function to create and return the datasets for the BM line and hist plot
+    */
     const RESULT = calculateBM(input);
 
     // LINE CHART
@@ -357,6 +365,9 @@ function createBMDatasets(input) {
 }
 
 function default_BM_plots(input = window.bm_default_input) {
+    /*
+      # ----- ---- ---- ---- Function to create the default plots for the simple BM line and hist plot
+    */
     const RESULT = createBMDatasets(input);
 
     // LINE CHART
@@ -377,7 +388,7 @@ function default_BM_plots(input = window.bm_default_input) {
                     display: true,
                     text: 'Brownian motion',
                     font: {
-                        Family: 'Helvetica',
+                        Family: window.font_famliy,
                         size: 18
                     }
                 },
@@ -385,17 +396,6 @@ function default_BM_plots(input = window.bm_default_input) {
                     position: 'top',
                     display: false,
                 },
-                // zoom: {
-                //     zoom: {
-                //         wheel: {
-                //             enabled: true,
-                //         },
-                //         pinch: {
-                //             enabled: true,
-                //         },
-                //         mode: 'x',
-                //     }
-                // }
             },
             scales: {
                 x: {
@@ -404,7 +404,7 @@ function default_BM_plots(input = window.bm_default_input) {
                         display: true,
                         text: 't',
                         font: {
-                            family: 'Helvetica',
+                            family: window.font_famliy,
                             size: 16,
                         }
                     },
@@ -415,7 +415,7 @@ function default_BM_plots(input = window.bm_default_input) {
                         display: true,
                         text: 'y',
                         font: {
-                            family: 'Helvetica',
+                            family: window.font_famliy,
                             size: 16
                         },
                     },
@@ -460,7 +460,7 @@ function default_BM_plots(input = window.bm_default_input) {
                     display: true,
                     text: 'Histogram',
                     font: {
-                        Family: 'Helvetica',
+                        Family: window.font_famliy,
                         size: 18
                     }
                 },
@@ -476,7 +476,7 @@ function default_BM_plots(input = window.bm_default_input) {
                         display: true,
                         text: 'y',
                         font: {
-                            family: 'Helvetica',
+                            family: window.font_famliy,
                             size: 16,
                         }
                     },
@@ -487,7 +487,7 @@ function default_BM_plots(input = window.bm_default_input) {
                         display: true,
                         text: 'Density',
                         font: {
-                            family: 'Helvetica',
+                            family: window.font_famliy,
                             size: 16,
                         },
                     },
@@ -512,7 +512,9 @@ function default_BM_plots(input = window.bm_default_input) {
 }
 
 function updateBM_plots(input) {
-    // this updates the plot with new values from slider input
+    /*
+      # ----- ---- ---- ---- Function to update the simple BM line and hist plot after input
+    */
     let line_chart = window.bm_line_plot;
     let hist_chart = window.bm_hist_plot;
     let values = JSON.parse(JSON.stringify(window.bm_default_input));
@@ -544,21 +546,60 @@ window.bm_dens_line_1of6 = {}, window.bm_dens_line_1of6 = {},
     window.bm_dens_line_3of6 = {}, window.bm_dens_line_4of6 = {},
     window.bm_dens_line_5of6 = {}, window.bm_dens_line_6of6 = {};
 
+window.contour_plot_layout = {
+    title: {
+        text: 'i) Density over time and space',
+        font: {
+            family: window.font_famliy,
+            size: 18
+        },
+        xref: 'paper',
+        x: 0.05,
+    },
+    xaxis: {
+        title: {
+            text: 'time',
+            font: {
+                family: font_famliy,
+                size: 18,
+                color: '#7f7f7f'
+            }
+        },
+    },
+    yaxis: {
+        title: {
+            text: 'space',
+            font: {
+                family: font_famliy,
+                size: 18,
+                color: '#7f7f7f'
+            },
+        },
+    },
+
+};
+window.contour_plot_config = {
+    toImageButtonOptions: {
+        format: 'svg',
+        filename: 'contour_plot',
+        width: 1920,
+        height: 1080,
+        scale: 1,
+    }
+}
+
 function createBM_density_Datasets(input) {
+    /*
+      # ----- ---- ---- ---- Function to create and return datasets for the density analysis plots
+    */
+
     const RESULT = calculateBM(input, densityAnalysis = true);
 
     // LINE CHART DATA
-    let line_data = RESULT.hstat,
-        t = RESULT.t;
-
-    // to have only one 
-    // line_data = [...new Array(40)].map((e, i) => line_data[i]);
-    // t = [...new Array(40)].map((e, i) => t[i]);
-
     const BM_DENSE_LINE_CHART_DATASET = {
         yAxisID: 'y',
         xAxisID: 'x',
-        data: line_data,
+        data: RESULT.hstat,
         fill: false,
         borderColor: "orange",
         pointRadius: 0,
@@ -566,11 +607,9 @@ function createBM_density_Datasets(input) {
         linewidth: 1,
     };
 
-
     // TABLE CHART DATA
-    let tableData = RESULT.dens_tableData;
-    // console.log("!: ", tableData); console.log(tableData.counts, tableData.values)
-    let BM_DENS_TABLE_CHART_DATASETS = new Array();
+    let tableData = RESULT.dens_tableData,
+        BM_DENS_TABLE_CHART_DATASETS = new Array();
     for (let entry = 0; entry < tableData.counts.length; entry++) {
         BM_DENS_TABLE_CHART_DATASETS.push({
             data: [{
@@ -584,11 +623,9 @@ function createBM_density_Datasets(input) {
             showLine: true,
             pointRadius: 0,
             borderColor: 'red',
-
         });
     }
-    // console.log("!", [...new Array(RESULT.h[0].length)].map((elem, index) =>
-    //     RESULT.h[0][index] / RESULT.Nparticle))
+
     // NOW THE SIX DENSITY LINE PLOTS
     const BM_DENS_LINE_1of6_DATASET = {
             yAxisID: 'y',
@@ -657,9 +694,37 @@ function createBM_density_Datasets(input) {
             linewidth: 1,
         };
 
+    /* CONTOUR PLOT 
+    # in R: > filled.contour(t,(-19:20)*ama/10-ama/20,h,color.palette=rainbow,xlab="time",ylab="space")
+    # x.length = h[0].length = 40 bars (default)
+    */
+    const contour_plot_data = [{
+        z: transpose(RESULT.h),
+        x: [...new Array(RESULT.N)].map((elem, index) => index / 2),
+        y: [...new Array(RESULT.h[0].length)].map((elem, index) => (index - 19) * RESULT.ama / 10 - RESULT.ama / 20),
+        type: 'contour',
+        colorscale: 'Jet',
+        // line: {
+        //     smoothing: 0.85
+        // },
+        autocontour: false,
+        colorbar: {
+            title: 'density',
+            // tickvals:[-250,-,50,100],
+            tickfont: {
+                color: 'black',
+            }
+        },
+        contours: {
+            start: -250,
+            end: 250,
+            size: 25,
+        }
+    }];
+
     return {
         BM_DENSE_LINE_CHART_DATASET: BM_DENSE_LINE_CHART_DATASET,
-        t: t,
+        t: RESULT.t,
         BM_DENS_TABLE_CHART_DATASETS: BM_DENS_TABLE_CHART_DATASETS,
         tableTicks: tableData.values,
         BM_DENS_LINE_1of6_DATASET: BM_DENS_LINE_1of6_DATASET,
@@ -668,17 +733,18 @@ function createBM_density_Datasets(input) {
         BM_DENS_LINE_4of6_DATASET: BM_DENS_LINE_4of6_DATASET,
         BM_DENS_LINE_5of6_DATASET: BM_DENS_LINE_5of6_DATASET,
         BM_DENS_LINE_6of6_DATASET: BM_DENS_LINE_6of6_DATASET,
+        contour_plot_data: contour_plot_data,
+        bin_brakes: RESULT.bin_brakes
     }
 }
 
 function default_BM_dens_plots(input = window.bm_default_input) {
     /*
-      # ----- ---- ---- ---- DENSITY ANALYSIS
-      */
+      # ----- ---- ---- ---- Function to plot the default DENSITY ANALYSIS plots
+    */
     const RESULT = createBM_density_Datasets(input)
+    const LABELS = [...new Array(RESULT.bin_brakes.length - 1)].map((elem, index) => Math.round(RESULT.bin_brakes[index]));
 
-
-    const LABELS = [...new Array(RESULT.BM_DENSE_LINE_CHART_DATASET.data.length)].map((elem, i) => i);
     // LINE PLOT
     document.getElementById('bm_dens_line_plot_container').innerHTML = '<canvas id="bm_dens_line_plot"></canvas>';
     let ctx1 = document.getElementById('bm_dens_line_plot');
@@ -694,10 +760,10 @@ function default_BM_dens_plots(input = window.bm_default_input) {
             plugins: {
                 title: {
                     display: true,
-                    text: ' ',
+                    text: 'a)',
                     font: {
-                        Family: 'Helvetica',
-                        size: 18
+                        Family: window.font_famliy,
+                        size: 16
                     }
                 },
                 legend: {
@@ -712,7 +778,7 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                         display: true,
                         text: 't',
                         font: {
-                            family: 'Helvetica',
+                            family: window.font_famliy,
                             size: 16,
                         }
                     },
@@ -723,7 +789,7 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                         display: true,
                         text: 'hstat[]',
                         font: {
-                            family: 'Helvetica',
+                            family: window.font_famliy,
                             size: 16
                         },
                     },
@@ -763,10 +829,10 @@ function default_BM_dens_plots(input = window.bm_default_input) {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Density of density?',
+                    text: 'b)',
                     font: {
-                        Family: 'Helvetica',
-                        size: 18
+                        Family: window.font_famliy,
+                        size: 16
                     }
                 },
                 legend: {
@@ -781,7 +847,7 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                         display: true,
                         text: 'value',
                         font: {
-                            family: 'Helvetica',
+                            family: window.font_famliy,
                             size: 16,
                         },
                     },
@@ -800,13 +866,12 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                         display: true,
                         text: 'Density',
                         font: {
-                            family: 'Helvetica',
+                            family: window.font_famliy,
                             size: 16
                         },
                     },
                 },
             },
-
             // animations: {
             //     radius: {
             //         duration: 400,
@@ -814,8 +879,8 @@ function default_BM_dens_plots(input = window.bm_default_input) {
             //         loop: (ctx) => ctx.activate
             //     }
             // },
-            // hoverRadius: 8,
-            // hoverBackgroundColor: 'yellow',
+            // hoverRadius: 2,
+            // hoverBackgroundColor: 'red',
             // interaction: {
             //     mode: 'nearest',
             //     intersect: false,
@@ -844,7 +909,8 @@ function default_BM_dens_plots(input = window.bm_default_input) {
         yLabels = [
             "h[1,]/Nparticle", "h[2,]/Nparticle", "h[4,]/Nparticle",
             "h[8,]/Nparticle", "h[N/2,]/Nparticle", "(h[N-1,]+h[N-2,])/Nparticle/2"
-        ]
+        ],
+        titles = ["c) ", "d) ", "e) ", "f) ", "g) ", "h) "];
     let six_charts = new Array(SIX_DATASETS.length);
 
     for (let entry = 0; entry < SIX_DATASETS.length; entry++) {
@@ -862,9 +928,9 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                     plugins: {
                         title: {
                             display: true,
-                            text: yLabels[entry],
+                            text: titles[entry],
                             font: {
-                                Family: 'Helvetica',
+                                Family: window.font_famliy,
                                 size: 16
                             }
                         },
@@ -880,7 +946,7 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                                 display: true,
                                 text: 'index',
                                 font: {
-                                    family: 'Helvetica',
+                                    family: window.font_famliy,
                                     size: 14,
                                 }
                             },
@@ -891,7 +957,7 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                                 display: true,
                                 text: yLabels[entry],
                                 font: {
-                                    family: 'Helvetica',
+                                    family: window.font_famliy,
                                     size: 14,
                                 },
                             },
@@ -924,13 +990,25 @@ function default_BM_dens_plots(input = window.bm_default_input) {
         window.bm_dens_line_5of6 = six_charts[4],
         window.bm_dens_line_6of6 = six_charts[5];
 
+
+    // NOW THE CONTOUR PLOT
+    Plotly.newPlot(
+        'contour_plot',
+        RESULT.contour_plot_data,
+        window.contour_plot_layout,
+        window.contour_plot_config,
+    );
+
 }
 
 function updateBM_dens_plots(input) {
-    // this updates the plot with new values from slider input
+    /*
+      # ----- ---- ---- ---- Function to update DENSITY ANALYSIS plots after input
+    */
     let values = JSON.parse(JSON.stringify(window.bm_default_input));
     values.T = input.T;
     values.d = input.d;
+    values.randomStartValue = input.randomStartValue;
 
     const RESULT = createBM_density_Datasets(values);
 
@@ -959,7 +1037,151 @@ function updateBM_dens_plots(input) {
         chart.data.datasets = [SIX_DATASETS_res[entry]]
         chart.update()
     }
+
+    // CONTOUR PLOT
+    Plotly.newPlot(
+        'contour_plot',
+        RESULT.contour_plot_data,
+        window.contour_plot_layout,
+        window.contour_plot_config
+    );
 }
+
+
+/*
+# =========
+# =====================
+# =====================================
+# ===================================================================================
+# ===================================================================================
+# DRIVING FUNCTION
+*/
+
+function integrierte_driving_function(x, b, c, d) {
+    return -(d * (1 / 4) * Math.pow(x, 4) + c * Math.pow(x, 2) + b * (1 / 2) * Math.pow(x, 2) - x);
+}
+
+function create_DF_dataset(input = window.bm_default_input) {
+    const len = 240;
+    const xVals = [...new Array(len)].map((e, i) => (i - (len / 2)));
+    const DATASETS = [{
+        label: "driving function",
+        xAxisID: 'x',
+        yAxisID: 'y',
+        data: [...new Array(len)].map((e, i) => driving_function(xVals[i], input.a, input.b, input.c, input.d)),
+        fill: false,
+        borderColor: "black",
+        pointRadius: 0,
+        type: 'line',
+        linewidth: 1,
+    }, {
+        label: "integral of function",
+        xAxisID: 'x',
+        yAxisID: 'y',
+        data: [...new Array(len)].map((e, i) => integrierte_driving_function(xVals[i], input.b, input.c, input.d)),
+        fill: false,
+        borderColor: "blue",
+        pointRadius: 0,
+        type: 'line',
+        linewidth: 1,
+    }];
+
+    return {
+        labels: xVals,
+        datasets: DATASETS,
+    }
+}
+
+function default_DF_plot(input = window.bm_default_input) {
+    /*
+    # ----- ---- ---- ---- Function to create the default plots for the driving function
+    */
+
+    const RESULT = create_DF_dataset(input);
+    document.getElementById('df_plot').remove();
+    document.getElementById('df_plot_container').innerHTML = '<canvas id="df_plot"></canvas>';
+    let ctx = document.getElementById('df_plot');
+    const config = {
+        type: 'line',
+        data: {
+            labels: RESULT.labels,
+            datasets: RESULT.datasets,
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'a) Driving function',
+                    font: {
+                        Family: window.font_famliy,
+                        size: 18
+                    }
+                },
+                legend: {
+                    position: 'top',
+                    display: true,
+                },
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'x',
+                        font: {
+                            family: window.font_famliy,
+                            size: 16,
+                        }
+                    },
+                    // min: -80,
+                    // max: 80,
+                    min: -100,
+                    max: 100,
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'y',
+                        font: {
+                            family: window.font_famliy,
+                            size: 16
+                        },
+                    },
+                    // min: -200,
+                    // max: 80,
+                    min: -300,
+                    max: 200,
+                },
+            },
+
+            animations: {
+                radius: {
+                    duration: 400,
+                    easing: 'linear',
+                    loop: (ctx) => ctx.activate
+                }
+            },
+            hoverRadius: 8,
+            hoverBackgroundColor: 'yellow',
+            interaction: {
+                mode: 'nearest',
+                intersect: false,
+                axis: 'x'
+            }
+        }
+    };
+    window.df_plot = new Chart(ctx, config);
+}
+
+function update_DF_plot(input) {
+    const RESULT = create_DF_dataset(input);
+    window.df_plot.data.datasets = RESULT.datasets;
+    window.df_plot.update();
+}
+
 /*
 # =========
 # =====================
@@ -968,8 +1190,9 @@ function updateBM_dens_plots(input) {
 # ===================================================================================
 # GENERAL
 */
-function init() {
+
+window.onload = function init() {
     default_BM_plots();
     default_BM_dens_plots();
+    default_DF_plot();
 }
-window.onload = init();

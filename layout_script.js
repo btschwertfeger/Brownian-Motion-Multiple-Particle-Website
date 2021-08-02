@@ -74,7 +74,8 @@ const bm_dens_d_slide = document.getElementById('bm_dens_d_slide'),
     bm_dens_T_slide = document.getElementById('bm_dens_T_slide'),
     bm_dens_SLIDER = document.getElementsByName('bm_dens_slide'),
     bm_dens_value_fields = document.getElementsByName('bm_dens_slide_value'),
-    bm_dens_plot_variables = ["d", "T"];
+    bm_dens_randomStartValue_checkbox = document.getElementById('bm_dens_randomStartValueCheckbox'),
+    bm_dens_plot_variables = ["d", "T", "randomStartValue"];
 
 const bm_dens_RESET_BTN = document.getElementById('bm_dens_resetBtn');
 bm_dens_RESET_BTN.onclick = function () {
@@ -87,13 +88,15 @@ bm_dens_RESET_BTN.onclick = function () {
         const default_value = window.bm_default_input[bm_dens_plot_variables[index]];
         document.getElementById(element.id).innerHTML = default_value;
     });
+    bm_dens_randomStartValue_checkbox.checked = false;
 }
 
 const bm_dens_AGAIN_BTN = document.getElementById('bm_dens_againBtn');
 bm_dens_AGAIN_BTN.onclick = function () {
     window.updateBM_dens_plots({
         d: bm_dens_d_slide.value,
-        T: bm_dens_T_slide.value
+        T: bm_dens_T_slide.value,
+        randomStartValue: bm_dens_randomStartValue_checkbox.checked,
     });
 }
 
@@ -106,7 +109,62 @@ for (let entry = 0; entry < bm_dens_SLIDER.length; entry++) {
     bm_dens_SLIDER[entry].onchange = function () {
         window.updateBM_dens_plots({
             d: bm_dens_d_slide.value,
-            T: bm_dens_T_slide.value
+            T: bm_dens_T_slide.value,
+            randomStartValue: bm_dens_randomStartValue_checkbox.checked,
+        });
+    }
+}
+bm_dens_randomStartValue_checkbox.onchange = function () {
+    window.updateBM_dens_plots({
+        d: bm_dens_d_slide.value,
+        T: bm_dens_T_slide.value,
+        randomStartValue: bm_dens_randomStartValue_checkbox.checked,
+    });
+}
+
+
+/*
+# =========
+# =====================
+# =====================================
+# ===================================================================================
+# ===================================================================================
+// DRIVING FUNCTION
+*/
+
+const df_a_slide = document.getElementById('df_a_slide'),
+    df_b_slide = document.getElementById('df_b_slide'),
+    df_c_slide = document.getElementById('df_c_slide'),
+    df_d_slide = document.getElementById('df_d_slide'),
+    df_SLIDER = document.getElementsByName('df_slide'),
+    df_value_fields = document.getElementsByName('df_slide_value'),
+    df_plot_variables = ["a", "b", "c", "d"];
+
+const df_RESET_BTN = document.getElementById('df_resetBtn');
+df_RESET_BTN.onclick = function () {
+    window.default_DF_plot(); // resets the plot
+    df_SLIDER.forEach((element, index) => { // reset the sliders
+        const default_value = window.bm_default_input[df_plot_variables[index]];
+        document.getElementById(element.id).value = default_value;
+    });
+    df_value_fields.forEach((element, index) => { // Reset value fields
+        const default_value = window.bm_default_input[df_plot_variables[index]];
+        document.getElementById(element.id).innerHTML = default_value;
+    });
+}
+
+for (let entry = 0; entry < df_SLIDER.length; entry++) {
+    df_SLIDER[entry].oninput = function () {
+        let elem_id = df_SLIDER[entry].id;
+        elem_id = elem_id.substring(0, elem_id.length - 5)
+        document.getElementById(elem_id + "value").innerHTML = document.getElementById(df_SLIDER[entry].id).value;
+    }
+    df_SLIDER[entry].onchange = function () {
+        window.update_DF_plot({
+            a: df_a_slide.value,
+            b: df_b_slide.value,
+            c: df_c_slide.value,
+            d: df_d_slide.value,
         });
     }
 }

@@ -20,6 +20,8 @@
         <script id="MathJax-script" async
             src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
         </script>
+        <!-- PLOTLY FOR CONTOURPLOT -->
+        <script src="https://cdn.plot.ly/plotly-2.3.0.min.js"></script>
     </head>
     <body>
         <div class="main">
@@ -31,17 +33,12 @@
 
             <!-- BROWNIAN MOTION -->
             <div class="bm-wrapper">
-                <!-- <div class="headline2">
-                    <h2></h2>
-                </div> -->
                 <div class="description">
-                    <h4>General</h4>
+                    <h3>General</h3>
                     <p>
-                        SOME NICE TEXT
+                        Was ist das hier und was genau macht das?
                     </p>
-
                 </div>
-
 
                 <!-- BROWNIAN MOTION FIRST LINE AND HIST PLOT -->
                 <div class="bm-plot-content-wrapper">
@@ -99,9 +96,65 @@
 
                 <div class="placeholder" style="width:100%;height:42px;"></div>
                 <div class="description">
-                    <h4>Analysis of the densities</h4>
+                    <h3>Analysis of the densities</h3>
                     <p>
-                        WHAT IS GOING ON HERE
+                        In the following you have the possibility to have a
+                        closer look at the distributions in certain timesteps.
+                    </p>
+                    <p>
+                        Explanations:
+                        <ul>
+                            <li>
+                                \(N\) is the number of steps (default:
+                                \(t/n_{stepsize}
+                                = 2000\))
+                            </li>
+                            <li>
+                                \(n_{particles}\) is the number of the particles
+                                (default:
+                                \(n_{particles} = 1000\))
+                            </li>
+                            <li>
+                                \(h\) is a matrix with the shape \((N, 40)\)
+                                where \(40\) is the number of categories in
+                                which
+                                the
+                                values are grouped. Thus in a
+                                histogram up to 40 bars would be possible.
+                            </li>
+                        </ul>
+                    </p>
+                    <p>
+                        For this purpose, a graph is shown in figure a), which
+                        represents the distribution of the values. Here,
+                        however, only the steps between \(N/2\) to \(N\) were
+                        examined, since in the first steps still very much lies
+                        in the hands of chance.
+                    </p>
+                    <p>
+                        Figure b) shows that most of the values in the \(a)\)
+                        chart are 0. (on default)
+                    </p>
+                    <p>
+                        Figure c) shows the distribution of the values in the
+                        first step. (R: h[1,]; Python: h[0]) Here it is
+                        to be noted that with fixed starting value in the first
+                        step always the same distribution occurs. However, if
+                        the start is chosen randomly, variations can be seen
+                        here as well.
+                    </p>
+                    <p>
+                        Figure d), e) and f) show the distributions of the \(n\)
+                        particles
+                        in the second, fourth and eighth step, respectively.
+                    </p>
+                    <p>
+                        Figure g) shows the distribution of particles in the
+                        \(N/2\) step, i.e. at the halfway point.
+                    </p>
+                    <p>
+                        Figure h) shows the average of the distributions of the
+                        last and penultimate step.
                     </p>
 
                 </div>
@@ -131,102 +184,199 @@
                             <input id="bm_dens_T_slide" type="range"
                                 class="bm-dens_slide slide"
                                 name="bm_dens_slide"
-                                min="40" max="1000"
-                                step="5" value="250">
+                                min="40" max="2500"
+                                step="5" value="1000">
                         </div>
-
+                        <div class="bm-input-wrapper input-wrapper"
+                            style="min-width: 100px;">
+                            <div>random start value</div>
+                            <label class="switch">
+                                <input id="bm_dens_randomStartValueCheckbox"
+                                    type="checkbox">
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
                         <button class="someBtn" id="bm_dens_againBtn">Again</button>
                         <button class="someBtn" id="bm_dens_resetBtn">Reset</button>
                     </div>
                     <div class="placeholder"
                         style="width:100%;height:40px"></div>
-                    <div id="bm_dens_line_plot_container"
-                        class="bm-dens-line-plot-container">
-                        <canvas id="bm_dens_line_plot" class="canvas"></canvas>
+
+                    <!-- FIRST TWO PLOTS - HISTOGRAM OF LAST 1000 STEPS AND TABLE PLOT -->
+                    <div class="row-wrapper">
+                        <div class="col-left">
+                            <div id="bm_dens_line_plot_container"
+                                class="bm-dens-line-hist-plot-container
+                                dens-plot-styling">
+                                <canvas id="bm_dens_line_plot" class="canvas"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-right">
+                            <div id="bm_dens_table_plot_container"
+                                class="bm-dens-table-plot-container
+                                dens-plot-styling">
+                                <canvas id="bm_dens_table_plot" class="canvas"></canvas>
+                            </div>
+                        </div>
                     </div>
-                    <div id="bm_dens_table_plot_container"
-                        class="bm-dens-table-plot-container">
-                        <canvas id="bm_dens_table_plot" class="canvas"></canvas>
-                    </div>
-
-
-
 
                     <!-- THE 6 ADDITIONAL PLOTS -->
                     <div class="row-wrapper">
-                        <div id="bm_line_1_plot_container"
-                            class="bm-line-1-plot-container">
-                            <canvas id="bm_line_1_plot" class="canvas"></canvas>
+                        <div class="col-left">
+                            <div id="bm_line_1_plot_container"
+                                class="bm-line-1-plot-container
+                                dens-plot-styling">
+                                <canvas id="bm_line_1_plot" class="canvas"></canvas>
+                            </div>
                         </div>
+                        <div class="col-right">
+                            <div id="bm_line_2_plot_container"
+                                class="bm-line-2-plot-container
+                                dens-plot-styling">
+                                <canvas id="bm_line_2_plot" class="canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
 
-                        <div id="bm_line_2_plot_container"
-                            class="bm-line-2-plot-container">
-                            <canvas id="bm_line_2_plot" class="canvas"></canvas>
+                    <div class="row-wrapper">
+                        <div class="col-left">
+                            <div id="bm_line_3_plot_container"
+                                class="bm-line-3-plot-container
+                                dens-plot-styling">
+                                <canvas id="bm_line_3_plot" class="canvas"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-right">
+                            <div id="bm_line_4_plot_container"
+                                class="bm-line-4-plot-container
+                                dens-plot-styling">
+                                <canvas id="bm_line_4_plot" class="canvas"></canvas>
+                            </div>
                         </div>
                     </div>
                     <div class="row-wrapper">
-                        <div id="bm_line_3_plot_container"
-                            class="bm-line-3-plot-container">
-                            <canvas id="bm_line_3_plot" class="canvas"></canvas>
+                        <div class="col-left">
+                            <div id="bm_line_5_plot_container"
+                                class="bm-line-5-plot-container
+                                dens-plot-styling">
+                                <canvas id="bm_line_5_plot" class="canvas"></canvas>
+                            </div>
                         </div>
-                        <div id="bm_line_4_plot_container"
-                            class="bm-line-4-plot-container">
-                            <canvas id="bm_line_4_plot" class="canvas"></canvas>
+                        <div class="col-right">
+                            <div id="bm_line_6_plot_container"
+                                class="bm-line-6-plot-container
+                                dens-plot-styling">
+                                <canvas id="bm_line_6_plot" class="canvas"></canvas>
+                            </div>
                         </div>
                     </div>
                     <div class="row-wrapper">
-                        <div id="bm_line_5_plot_container"
-                            class="bm-line-5-plot-container">
-                            <canvas id="bm_line_5_plot" class="canvas"></canvas>
-                        </div>
-                        <div id="bm_line_6_plot_container"
-                            class="bm-line-6-plot-container">
-                            <canvas id="bm_line_6_plot" class="canvas"></canvas>
+                        <div class="contour-plot-container"
+                            style="width:80%; height:650px; margin: 0 auto;">
+                            <div id="contour_plot" class="dens-plot-styling"
+                                style="width:100%; height:100%;">
+                            </div>
                         </div>
                     </div>
+
+                    <div class="placeholder" style="width:100%;height:20px;"></div>
                 </div>
-                <div class="placeholder" style="width:100%;height:50px;"></div>
-                <!-- THE 6 ADDITIONAL PLOTS -->
-                <!-- <div class="bm-dens-add-plot-content-wrapper">
-                    <div class="row-wrapper">
-                        <div id="bm_line_1_plot_container"
-                            class="bm-line-1-plot-container">
-                         /div>
-
-                        <div id="bm_line_2_plot_container"
-                            class="bm-line-2-plot-container">
-                            <canvas id="bm_line_2_plot" class="canvas"></canvas>
-                        </div>
-                    </div>
-                    <div class="row-wrapper">
-                        <div id="bm_line_3_plot_container"
-                            class="bm-line-3-plot-container">
-                            <canvas id="bm_line_3_plot" class="canvas"></canvas>
-                        </div>
-                        <div id="bm_line_4_plot_container"
-                            class="bm-line-4-plot-container">
-                            <canvas id="bm_line_4_plot" class="canvas"></canvas>
-                        </div>
-                    </div>
-                    <div class="row-wrapper">
-                        <div id="bm_line_5_plot_container"
-                            class="bm-line-5-plot-container">
-                            <canvas id="bm_line_5_plot" class="canvas"></canvas>
-                        </div>
-                        <div id="bm_line_6_plot_container"
-                            class="bm-line-6-plot-container">
-                            <canvas id="bm_line_6_plot" class="canvas"></canvas>
-                        </div>
-                    </div>
-                </div> 
-            </div>
-   <canvas id="bm_line_1_plot" class="canvas"></canvas>
-                        <
-            <div class="placeholder" style="width:100%;height:100px;"></div>
-        -->
                 <div class="placeholder"
                     style="width:100%;height:42px;"></div>
-                <div id="footer" style="text-align:center; margin:0 auto; width:
+
+
+                <!-- DRIVNG FUNCTION  -->
+                <div class="description">
+                    <h3>Driving function</h3>
+                    <p>Following is the diving function. It is the backbone of
+                        the
+                        above results and can clarify its behavior.
+                    </p>
+                    <p>
+                        <ul>
+                            <li>
+                                Driving Function:
+                            </li>
+                        </ul>
+                    </p>
+                    <p style="text-align: center;">
+                        \( f_{(x)} = dx^3+cx^2+bx-a\)
+                    </p>
+                    <p>
+                        <ul>
+                            <li>
+                                Integral of ...:
+                            </li>
+                        </ul>
+                    </p>
+                    <p style="text-align:center;">
+                        \(-(d\frac{1}{4}x^4+cx^3+b\frac{1}{2}x^2-x)\)
+                    </p>
+                </div>
+                <div class="df-plot-content-wrapper">
+                    <div id="df_plot_container"
+                        class="df-plot-container">
+                        <canvas id="df_plot" class="canvas"></canvas>
+                    </div>
+
+                    <div id="df_input_section"
+                        class="df-input-section">
+                        <div class="df-input-wrapper input-wrapper">
+                            <div>\(a\)</div>
+                            <div id="df_a_value"
+                                name="df_slide_value"
+                                class="df-slide-value slide-value">1</div>
+                            <input id="df_a_slide" type="range"
+                                class="df-slide slide"
+                                name="df_slide"
+                                min="-5" max="5"
+                                step="0.01" value="1">
+
+                        </div>
+                        <div class="df-input-wrapper input-wrapper">
+                            <div>\(b\)</div>
+                            <div id="df_b_value"
+                                name="df_slide_value"
+                                class="df-slide-value slide-value">0.8</div>
+                            <input id="df_b_slide" type="range"
+                                class="df-slide slide"
+                                name="df_slide"
+                                min="-5" max="5"
+                                step="0.01" value="0.8">
+
+                        </div>
+                        <div class="df-input-wrapper input-wrapper">
+                            <div>\(c\)</div>
+                            <div id="df_c_value"
+                                name="df_slide_value"
+                                class="df-slide-value slide-value">0</div>
+                            <input id="df_c_slide" type="range"
+                                class="df-slide slide"
+                                name="df_slide"
+                                min="-1" max="1"
+                                step="0.001" value="0">
+
+                        </div>
+                        <div class="df-input-wrapper input-wrapper">
+                            <div>\(d\)</div>
+                            <div id="df_d_value"
+                                name="df_slide_value"
+                                class="df-slide-value slide-value">-0.001</div>
+                            <input id="df_d_slide" type="range"
+                                class="df-slide slide"
+                                name="df_slide"
+                                min="-0.001" max="-0.0001"
+                                step="0.0001" value="-0.001">
+
+                        </div>
+                        <button class="someBtn" id="df_resetBtn">Reset</button>
+                    </div>
+                </div>
+
+                <div class="placeholder"
+                    style="width:100%;height:42px;"></div>
+                <div id="footer" style="text-align:center; margin:0 auto;
+                    width:
                     50%;">Copyright © 2021 <a
                         href="https://www.b-schwertfeger.de">Benjamin
                         T. Schwertfeger</a>
