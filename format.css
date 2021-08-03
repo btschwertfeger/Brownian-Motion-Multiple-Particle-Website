@@ -60,7 +60,7 @@ a:hover {
 }
 
 .input-wrapper {
-  min-width: 290px;
+  min-width: 230px;/*290px;*/
   margin: 8px;
 }
 .input-wrapper,
@@ -71,7 +71,7 @@ a:hover {
 .slide {
   float: right;
   -webkit-appearance: none;
-  min-width: 225px;
+  min-width: 165px;/*225px;*/
   height: 20px;
 
   outline: none;

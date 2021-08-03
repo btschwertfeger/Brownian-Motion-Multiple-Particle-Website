@@ -21,7 +21,8 @@ const bm_d_slide = document.getElementById('bm_d_slide'),
     bm_n_slide = document.getElementById('bm_nlines_slide'),
     bm_SLIDER = document.getElementsByName('bm_slide'),
     bm_value_fields = document.getElementsByName('bm_slide_value'),
-    bm_plot_variables = ["d", "T", "nlines"];
+    bm_randomStartValue_checkbox = document.getElementById('bm_randomStartValueCheckbox'),
+    bm_plot_variables = ["d", "T", "nlines", "randomStartValue"];
 
 const bm_RESET_BTN = document.getElementById('bm_resetBtn');
 bm_RESET_BTN.onclick = function () {
@@ -34,6 +35,7 @@ bm_RESET_BTN.onclick = function () {
         const default_value = window.bm_default_input[bm_plot_variables[index]];
         document.getElementById(element.id).innerHTML = default_value;
     });
+    bm_randomStartValue_checkbox.checked = false;
 }
 
 const bm_AGAIN_BTN = document.getElementById('bm_againBtn');
@@ -42,6 +44,7 @@ bm_AGAIN_BTN.onclick = function () {
         d: bm_d_slide.value,
         T: bm_T_slide.value,
         nlines: bm_n_slide.value,
+        randomStartValue: bm_randomStartValue_checkbox.checked,
     });
 }
 
@@ -56,8 +59,18 @@ for (let entry = 0; entry < bm_SLIDER.length; entry++) {
             d: bm_d_slide.value,
             T: bm_T_slide.value,
             nlines: bm_n_slide.value,
+            randomStartValue: bm_randomStartValue_checkbox.checked,
         });
     }
+}
+
+bm_randomStartValue_checkbox.onchange = function () {
+    window.updateBM_plots({
+        d: bm_d_slide.value,
+        T: bm_T_slide.value,
+        nlines: bm_n_slide.value,
+        randomStartValue: bm_randomStartValue_checkbox.checked,
+    });
 }
 
 /*

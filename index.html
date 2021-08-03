@@ -36,7 +36,13 @@
                 <div class="description">
                     <h3>General</h3>
                     <p>
-                        Was ist das hier und was genau macht das?
+                        In the following we will deal with the topic of brownian
+                        motion. This is an apparently irregular and jerky motion
+                        of particles in liquids and gases.
+                    </p>
+                    <p>
+                        #brownianMotion #multipleParticle
+                        #forwardModeling
                     </p>
                 </div>
 
@@ -77,17 +83,27 @@
 
                         </div>
                         <div class="bm-input-wrapper input-wrapper">
-                            <div>\(n\) - lines</div>
+                            <div>\(N_{particles}\)</div>
                             <div id="bm_nlines_value"
                                 name="bm_slide_value"
                                 class="bm-slide-value slide-value">1</div>
                             <input id="bm_nlines_slide" type="range"
                                 class="bm-slide slide"
                                 name="bm_slide"
-                                min="1" max="20"
+                                min="1" max="50"
                                 step="1" value="1">
 
                         </div>
+                        <div class="bm-input-wrapper input-wrapper"
+                            style="min-width: 100px;">
+                            <div>random start value</div>
+                            <label class="switch">
+                                <input id="bm_randomStartValueCheckbox"
+                                    type="checkbox">
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+
                         <button class="someBtn" id="bm_againBtn">Again</button>
                         <button class="someBtn" id="bm_resetBtn">Reset</button>
                     </div>
@@ -105,18 +121,25 @@
                         Explanations:
                         <ul>
                             <li>
-                                \(N\) is the number of steps (default:
-                                \(t/n_{stepsize}
-                                = 2000\))
+                                \(t\): integration time in time units (default:
+                                1000)
                             </li>
                             <li>
-                                \(n_{particles}\) is the number of the particles
+                                \(n\): stepsize (default: 0.5)
+                            </li>
+                            <li>
+                                \(N\): number of steps (default:
+                                \(t/n = 2000\))
+                            </li>
+                            <li>
+                                \(N_{particles}\): number of the particles
                                 (default:
-                                \(n_{particles} = 1000\))
+                                \(N_{particles} = 1000\))
                             </li>
                             <li>
-                                \(h\) is a matrix with the shape \((N, 40)\)
-                                where \(40\) is the number of categories in
+                                \(h\): matrix with the shape \((N, 40)\)
+                                where \(40\) is the number of equally spaced
+                                categories in
                                 which
                                 the
                                 values are grouped. Thus in a
@@ -125,32 +148,30 @@
                         </ul>
                     </p>
                     <p>
-                        For this purpose, a graph is shown in figure a), which
-                        represents the distribution of the values. Here,
-                        however, only the steps between \(N/2\) to \(N\) were
-                        examined, since in the first steps still very much lies
-                        in the hands of chance.
+                        Figure a) represents the distribution of the values
+                        between the
+                        steps \(N/2\) and \(N\).
                     </p>
                     <p>
-                        Figure b) shows that most of the values in the \(a)\)
-                        chart are 0. (on default)
+                        Figure b) shows that most of the values in \(a)\)
+                        are 0. (on default)
                     </p>
                     <p>
                         Figure c) shows the distribution of the values in the
-                        first step. (R: h[1,]; Python: h[0]) Here it is
+                        first step (R: h[1,]; Python: h[0]). Here it is
                         to be noted that with fixed starting value in the first
                         step always the same distribution occurs. However, if
                         the start is chosen randomly, variations can be seen
                         here as well.
                     </p>
                     <p>
-                        Figure d), e) and f) show the distributions of the \(n\)
-                        particles
+                        Figure d), e) and f) show the distributions of
+                        \(N_{particles}\)
                         in the second, fourth and eighth step, respectively.
                     </p>
                     <p>
-                        Figure g) shows the distribution of particles in the
-                        \(N/2\) step, i.e. at the halfway point.
+                        Figure g) shows the distribution of \(N_{particles}\) at
+                        step \(N/2\).
                     </p>
                     <p>
                         Figure h) shows the average of the distributions of the
@@ -158,7 +179,6 @@
                     </p>
 
                 </div>
-
 
                 <!-- BROWNIAN MOTION DENSITY ANALYSIS PART 1 -->
                 <div class="bm-dens-plot-content-wrapper">
@@ -176,7 +196,7 @@
                                 step="0.0001" value="-0.001">
 
                         </div>
-                        <div class="bm-input-wrapper input-wrapper">
+                        <div class="bm-dens-input-wrapper input-wrapper">
                             <div>\(t\) (integration time)</div>
                             <div id="bm_dens_T_value"
                                 name="bm_dens_slide_value"
@@ -187,7 +207,7 @@
                                 min="40" max="2500"
                                 step="5" value="1000">
                         </div>
-                        <div class="bm-input-wrapper input-wrapper"
+                        <div class="bm-dens-input-wrapper input-wrapper"
                             style="min-width: 100px;">
                             <div>random start value</div>
                             <label class="switch">
@@ -295,22 +315,17 @@
                     <p>
                         <ul>
                             <li>
-                                Driving Function:
+                                Driving function:
                             </li>
                         </ul>
                     </p>
                     <p style="text-align: center;">
-                        \( f_{(x)} = dx^3+cx^2+bx-a\)
-                    </p>
-                    <p>
-                        <ul>
-                            <li>
-                                Integral of ...:
-                            </li>
-                        </ul>
-                    </p>
-                    <p style="text-align:center;">
-                        \(-(d\frac{1}{4}x^4+cx^3+b\frac{1}{2}x^2-x)\)
+                        \( \begin{align}
+                        f_{(x)} &= dx^3+cx^2+bx-a \\ \\
+                        F(x) = \int f(x) dx &=
+                        \frac{d}{4}x^4+\frac{c}{3}x^3+\frac{b}{2}x^2-x
+                        \end{align}
+                        \)
                     </p>
                 </div>
                 <div class="df-plot-content-wrapper">
@@ -373,14 +388,14 @@
                     </div>
                 </div>
 
-                <div class="placeholder"
-                    style="width:100%;height:42px;"></div>
-                <div id="footer" style="text-align:center; margin:0 auto;
-                    width:
-                    50%;">Copyright © 2021 <a
-                        href="https://www.b-schwertfeger.de">Benjamin
-                        T. Schwertfeger</a>
-                </div>
+            </div>
+            <div class="placeholder"
+                style="width:100%;height:62px;"></div>
+            <div id="footer" style="text-align:center; margin:0 auto;
+                width:
+                50%;">Copyright © 2021 <a
+                    href="https://www.b-schwertfeger.de">Benjamin
+                    T. Schwertfeger</a>
             </div>
             <div class="placeholder" style="width:100%;height:100px;"></div>
             <script src="main.js" async defer></script>

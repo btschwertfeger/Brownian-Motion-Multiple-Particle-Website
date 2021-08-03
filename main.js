@@ -122,7 +122,6 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
     // function f_fun(y, a, b, c, d) {
     //     return (d * Math.pow(y, 3) + c * Math.pow(y, 2) + b * y - a)
     // }
-
     let N = input.T / input.h
     let t = [...new Array(N)].map((entry, index) => index * input.h),
         x = 0;
@@ -150,8 +149,6 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
     const ama2 = Math.max(Math.max.apply(Math, xmax_rows), 2),
         ami = Math.min(Math.min.apply(Math, xmin_rows), -2),
         ama = Math.max(ama2, -ami);
-
-    // console.log(ama2, ami, ama, x)
 
     window.bm_active_values = {
         Ca: input.Ca,
@@ -337,7 +334,7 @@ function createBMDatasets(input) {
     let histdata = new Array(bins.length),
         histlabels = new Array(bins.length);
     for (let i = 0; i < bins.length; i++) {
-        histdata[i] = bins[i].count;
+        histdata[i] = (bins[i].count) / RESULT.N / LINES;
         histlabels[i] = Math.round((bins[i].minNum + bins[i].maxNum) / 2, 1)
     }
 
@@ -521,6 +518,7 @@ function updateBM_plots(input) {
     values.T = input.T;
     values.d = input.d;
     values.nlines = input.nlines;
+    values.randomStartValue = input.randomStartValue;
 
     const RESULT = createBMDatasets(values);
 
@@ -686,7 +684,7 @@ function createBM_density_Datasets(input) {
             yAxisID: 'y',
             xAxisID: 'x',
             data: [...new Array(RESULT.h[0].length)].map((elem, index) =>
-                RESULT.h[RESULT.N - 1][index] + (RESULT.h[RESULT.N - 2][index]) / RESULT.Nparticle / 2),
+                (RESULT.h[RESULT.N - 1][index] + (RESULT.h[RESULT.N - 2][index])) / RESULT.Nparticle / 2),
             fill: false,
             borderColor: "orange",
             pointRadius: 0,
@@ -944,7 +942,7 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                             display: true,
                             title: {
                                 display: true,
-                                text: 'index',
+                                text: 'value',
                                 font: {
                                     family: window.font_famliy,
                                     size: 14,
@@ -1058,14 +1056,14 @@ function updateBM_dens_plots(input) {
 */
 
 function integrierte_driving_function(x, b, c, d) {
-    return -(d * (1 / 4) * Math.pow(x, 4) + c * Math.pow(x, 2) + b * (1 / 2) * Math.pow(x, 2) - x);
+    return d * (1 / 4) * Math.pow(x, 4) + c * 1 / 3 * Math.pow(x, 2) + b * (1 / 2) * Math.pow(x, 2) - x;
 }
 
 function create_DF_dataset(input = window.bm_default_input) {
     const len = 240;
     const xVals = [...new Array(len)].map((e, i) => (i - (len / 2)));
     const DATASETS = [{
-        label: "driving function",
+        label: "f(x)",
         xAxisID: 'x',
         yAxisID: 'y',
         data: [...new Array(len)].map((e, i) => driving_function(xVals[i], input.a, input.b, input.c, input.d)),
@@ -1075,7 +1073,7 @@ function create_DF_dataset(input = window.bm_default_input) {
         type: 'line',
         linewidth: 1,
     }, {
-        label: "integral of function",
+        label: "F(x)",
         xAxisID: 'x',
         yAxisID: 'y',
         data: [...new Array(len)].map((e, i) => integrierte_driving_function(xVals[i], input.b, input.c, input.d)),
@@ -1113,7 +1111,7 @@ function default_DF_plot(input = window.bm_default_input) {
             plugins: {
                 title: {
                     display: true,
-                    text: 'a) Driving function',
+                    text: 'Driving function',
                     font: {
                         Family: window.font_famliy,
                         size: 18
@@ -1122,6 +1120,13 @@ function default_DF_plot(input = window.bm_default_input) {
                 legend: {
                     position: 'top',
                     display: true,
+                    labels: {
+                        font: {
+                            family: 'Times New Roman',
+                            style: 'italic',
+                            // size: 14
+                        },
+                    },
                 },
             },
             scales: {
@@ -1135,8 +1140,6 @@ function default_DF_plot(input = window.bm_default_input) {
                             size: 16,
                         }
                     },
-                    // min: -80,
-                    // max: 80,
                     min: -100,
                     max: 100,
                 },
@@ -1150,10 +1153,8 @@ function default_DF_plot(input = window.bm_default_input) {
                             size: 16
                         },
                     },
-                    // min: -200,
-                    // max: 80,
-                    min: -300,
-                    max: 200,
+                    min: -500,
+                    max: 500,
                 },
             },
 
@@ -1171,7 +1172,7 @@ function default_DF_plot(input = window.bm_default_input) {
                 intersect: false,
                 axis: 'x'
             }
-        }
+        },
     };
     window.df_plot = new Chart(ctx, config);
 }
