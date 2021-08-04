@@ -16,6 +16,12 @@
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+
+  /* avoid transition flickering */
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d;
 }
 html {
   font-family: Helvetica;
@@ -54,6 +60,7 @@ p {
 a {
   text-decoration: none;
   color: blue;
+  transition: color 0.2s ease-in-out;
 }
 a:hover {
   color: red;
@@ -82,6 +89,7 @@ a:hover {
   border-radius: 15px;
   background: #ffffff;
   box-shadow: inset 26px 26px 52px #b3b3b3, inset -26px -26px 52px #ffffff;
+  transition: opacity 0.3s ease-in-out;
 }
 .slide:hover {
   opacity: 1;
@@ -130,11 +138,13 @@ a:hover {
   text-decoration: none;
   display: inline-block;
   border-radius: 15px;
-  box-shadow: 26px 26px 52px #969696, -26px -26px 52px #ffffff;
+  box-shadow: 16px 16px 32px #969696, -16px -16px 32px #ffffff;
+  transition: box-shadow 0.3s ease-in-out;
 }
 .someBtn:hover {
   background: linear-gradient(145deg, #e6e6e6, #ffffff);
   box-shadow: 8px 8px 16px #969696, -8px -8px 16px #ffffff;
+  cursor: pointer;
 }
 .someBtn:active {
   background-color: #ffffff;
@@ -163,6 +173,11 @@ a:hover {
 .bm-dens-line-plot-container,
 .bm-dens-table-plot-container,
 .df-plot-container {
+
+  z-index: 5;
+  position: relative;
+  -webkit-transform: translateZ(0);
+
   position: relative;
   -webkit-appearance: none;
   -webkit-box-sizing: border-box;
@@ -258,6 +273,11 @@ a:hover {
   background-color: #ccc;
   -webkit-transition: 0.4s;
   transition: 0.4s;
+  opacity: 0.7;
+  transition: opacity 0.3 ease-in-out;
+}
+.switch-slider:hover{
+  opacity: 1;
 }
 .switch-slider:before {
   position: absolute;
@@ -324,11 +344,22 @@ input:checked + .switch-slider:before {
   border-radius: 30px 30px 30px 30px;
   padding-right: 2%;
 }
+.contour-plot-wrapper{
+  height: 650px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+}
+.contour-plot-container{
+  width: 95%; 
+  height: 630px; 
+  margin: 0 auto;
+}
 
 .dens-plot-styling {
-  border-radius: 15px;
+  border-radius: 30px;
   background: #ffffff;
-  box-shadow: 20px 20px 60px #d9d9d9, -20px -20px 60px #ffffff;
+  box-shadow: 20px 0px 32px #969696, -20px -20px 32px #ffffff;
 }
 
 @media only screen and (max-width: 740px) {
