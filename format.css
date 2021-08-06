@@ -68,7 +68,7 @@ a:hover {
 
 .input-wrapper {
   min-width: 230px;/*290px;*/
-  margin: 8px;
+  margin: 5px;
 }
 .input-wrapper,
 .slide-value {
@@ -218,7 +218,7 @@ a:hover {
   font-size: 18px;
 }
 .bm-input-section button {
-  margin-top: 15px;
+  margin: 15px 5px 15px 0px;
   vertical-align: top;
 }
 /*
@@ -246,7 +246,7 @@ a:hover {
   box-shadow: 12px 12px 24px #969696, -12px -12px 24px #ffffff;
 }
 .bm-dens-input-section button {
-  margin-top: 15px;
+  margin: 15px 5px 15px 0px;
   vertical-align: top;
   /* box-shadow: 8px 8px 16px #969696, -8px -8px 16px #ffffff; */
 }
@@ -399,6 +399,6 @@ input:checked + .switch-slider:before {
   font-size: 18px;
 }
 .df-input-section button {
-  margin-top: 15px;
+  margin: 15px 0px 15px 0px;
   vertical-align: top;
 }
