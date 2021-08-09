@@ -146,10 +146,16 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
             return Math.min.apply(Math, row);
         });
 
-    const ama2 = Math.max(Math.max.apply(Math, xmax_rows), 2),
-        ami = Math.min(Math.min.apply(Math, xmin_rows), -2),
-        ama = Math.max(ama2, -ami) / 2;
 
+
+    // const ama2 = Math.max(Math.max.apply(Math, xmax_rows), 2),
+    //     ami = Math.min(Math.min.apply(Math, xmin_rows), -2);
+    /* to avoid erros bc of nans */
+    const ama2 = Math.max(...xmin_rows.map(e => isNaN(e) ? Number.MIN_SAFE_INTEGER : e)),
+        ami = Math.min(...xmin_rows.map(e => isNaN(e) ? Number.MAX_SAFE_INTEGER : e));
+    const ama = Math.max(ama2, -ami) / 2;
+
+    console.log(ama, ami, ama2)
     window.bm_active_values = {
         Ca: input.Ca,
         a: input.a,
@@ -278,11 +284,11 @@ function createBMDatasets(input) {
     const LINES = input.nlines;
 
     // HISTOGRAM
-    const ymin = RESULT.ami,
-        ymax = RESULT.ama,
-        bars = 40;
+    const bars = 40;
     const bin_brakes = [...new Array(bars + 1)].map((elem, index) => (index - bars / 2) * RESULT.ama / 10);
 
+    // console.log(RESULT.ama)
+    console.log(bin_brakes)
     //Setup Bins
     let default_bins = []
     for (let i = 0; i < bin_brakes.length - 1; i++) {
@@ -386,6 +392,17 @@ function default_BM_plots(input = window.bm_default_input) {
                 legend: {
                     position: 'top',
                     display: false,
+                },
+                tooltip: {
+                    usePointStyle: true,
+                    callbacks: {
+                        labelPointStyle: function (context) {
+                            return {
+                                pointStyle: 'rectRot',
+                                rotation: 0,
+                            };
+                        },
+                    },
                 },
             },
             scales: {
@@ -506,22 +523,22 @@ function updateBM_plots(input) {
     /*
       # ----- ---- ---- ---- Function to update the simple BM line and hist plot after input
     */
-    let line_chart = window.bm_line_plot;
-    let hist_chart = window.bm_hist_plot;
-    let values = JSON.parse(JSON.stringify(window.bm_default_input));
-    values.T = input.T;
-    values.d = input.d;
-    values.nlines = input.nlines;
-    values.randomStartValue = input.randomStartValue;
+    let line_chart = window.bm_line_plot,
+        hist_chart = window.bm_hist_plot,
+        values = JSON.parse(JSON.stringify(window.bm_default_input));
+    values.T = input.T,
+        values.Ca = input.Ca,
+        values.nlines = input.nlines,
+        values.randomStartValue = input.randomStartValue;
 
     const RESULT = createBMDatasets(values);
 
-    line_chart.data.labels = RESULT.values.t;
-    line_chart.data.datasets = RESULT.BM_LINE_CHART_DATASETS;
+    line_chart.data.labels = RESULT.values.t,
+        line_chart.data.datasets = RESULT.BM_LINE_CHART_DATASETS;
     line_chart.update()
 
-    hist_chart.data.labels = RESULT.BM_HIST_CHART_DATASET.labels;
-    hist_chart.data.datasets = [RESULT.BM_HIST_CHART_DATASET];
+    hist_chart.data.labels = RESULT.BM_HIST_CHART_DATASET.labels,
+        hist_chart.data.datasets = [RESULT.BM_HIST_CHART_DATASET];
     hist_chart.update()
 }
 
@@ -976,13 +993,13 @@ function updateBM_dens_plots(input) {
     */
     let values = JSON.parse(JSON.stringify(window.bm_default_input));
     values.T = input.T;
-    values.d = input.d;
+    values.Ca = input.Ca;
     values.randomStartValue = input.randomStartValue;
 
     const RESULT = createBM_density_Datasets(values);
 
     let line_chart = window.bm_dens_line_plot;
-    line_chart.data.labels = RESULT.LABELS; //[...new Array(RESULT.BM_DENSE_LINE_CHART_DATASET.data.length)].map((elem, i) => i);;
+    //line_chart.data.labels = RESULT.LABELS; //[...new Array(RESULT.BM_DENSE_LINE_CHART_DATASET.data.length)].map((elem, i) => i);;
     line_chart.data.datasets = RESULT.BM_DENSE_LINE_CHART_DATASETS;
     line_chart.update()
 
@@ -1022,7 +1039,7 @@ function updateBM_dens_plots(input) {
 */
 
 function integrierte_driving_function(x, b, c, d) {
-    return d * (1 / 4) * Math.pow(x, 4) + c * 1 / 3 * Math.pow(x, 2) + b * (1 / 2) * Math.pow(x, 2) - x;
+    return -(d * (1 / 4) * Math.pow(x, 4) + c * 1 / 3 * Math.pow(x, 2) + b * (1 / 2) * Math.pow(x, 2) - x);
 }
 
 function create_DF_dataset(input = window.bm_default_input) {
@@ -1039,7 +1056,7 @@ function create_DF_dataset(input = window.bm_default_input) {
         type: 'line',
         linewidth: 1,
     }, {
-        label: "F(x)",
+        label: "-F(x)",
         xAxisID: 'x',
         yAxisID: 'y',
         data: [...new Array(len)].map((e, i) => integrierte_driving_function(xVals[i], input.b, input.c, input.d)),
@@ -1088,9 +1105,20 @@ function default_DF_plot(input = window.bm_default_input) {
                     display: true,
                     labels: {
                         font: {
-                            family: 'Times New Roman',
+                            Family: 'Times New Roman',
                             style: 'italic',
                             // size: 14
+                        },
+                    },
+                },
+                tooltip: {
+                    usePointStyle: true,
+                    callbacks: {
+                        labelPointStyle: function (context) {
+                            return {
+                                pointStyle: 'rectRot',
+                                rotation: 0
+                            };
                         },
                     },
                 },
@@ -1106,8 +1134,8 @@ function default_DF_plot(input = window.bm_default_input) {
                             size: 16,
                         }
                     },
-                    min: -100,
-                    max: 100,
+                    min: -58,
+                    max: 58,
                 },
                 y: {
                     display: true,
@@ -1119,8 +1147,8 @@ function default_DF_plot(input = window.bm_default_input) {
                             size: 16
                         },
                     },
-                    min: -500,
-                    max: 500,
+                    min: -200,
+                    max: 200,
                 },
             },
 
@@ -1131,7 +1159,7 @@ function default_DF_plot(input = window.bm_default_input) {
                     loop: (ctx) => ctx.activate
                 }
             },
-            hoverRadius: 8,
+            hoverRadius: 6,
             hoverBackgroundColor: 'yellow',
             interaction: {
                 mode: 'nearest',
@@ -1150,6 +1178,153 @@ function update_DF_plot(input) {
 }
 
 /*
+# ===================================================================================
+# ===================================================================================
+# === wohin bewegt sich ein Partikel wenn er an Punk ... ist ?
+*/
+
+window.df_X_line_plot = {};
+window.default_input_X = {
+    y0: 1.25,
+    h: 0.01,
+    N: 2000,
+    a: 1,
+    b: 0.8,
+    c: 0,
+    d: -0.001,
+};
+
+function computeX(input = window.default_input_X) {
+    let y = new Array(input.N).fill(0);
+    y[0] = input.y0;
+    for (let i = 1; i < input.N; i++) {
+        y[i] = y[i - 1] + input.h * driving_function(y[i - 1], input.a, input.b, input.c, input.d);
+    }
+    return {
+        y: y
+    };
+}
+
+function createDatasetofX(input = window.default_input_X) {
+    const RESULT = computeX(input);
+    return {
+        DATASETS: [{
+            label: "movement to stable condition",
+            xAxisID: 'x',
+            yAxisID: 'y',
+            data: RESULT.y,
+            fill: false,
+            borderColor: "black",
+            pointRadius: 0,
+            type: 'line',
+            linewidth: 1,
+        }],
+        LABELS: [...new Array(input.N)].map((e, i) => Math.round(((i * input.h) + Number.EPSILON) * 100) / 100),
+    };
+}
+
+function defaultPointMovementPlot() {
+    const RESULT = createDatasetofX();
+
+    document.getElementById('df_X-plot_container').innerHTML = '<canvas id="df_X_plot"></canvas>';
+    let ctx = document.getElementById('df_X_plot');
+    const config = {
+        type: 'line',
+        data: {
+            labels: RESULT.LABELS,
+            datasets: RESULT.DATASETS,
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Particle movement',
+                    font: {
+                        Family: window.font_famliy,
+                        size: 16
+                    }
+                },
+                legend: {
+                    display: true,
+                },
+                tooltip: {
+                    usePointStyle: true,
+
+                    callbacks: {
+                        labelPointStyle: function (context) {
+                            return {
+                                pointStyle: 'rectRot',
+                                rotation: 0
+                            };
+                        },
+                        label: function (context) {
+                            let label = 'x';
+
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += context.parsed.y;
+                            }
+                            return label;
+                        },
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'time',
+                        font: {
+                            family: window.font_famliy,
+                            size: 16,
+                        },
+                    },
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'x',
+                        font: {
+                            family: window.font_famliy,
+                            size: 16
+                        },
+                    },
+                },
+            },
+            animations: {
+                radius: {
+                    duration: 400,
+                    easing: 'linear',
+                    loop: (ctx) => ctx.activate,
+                },
+            },
+            hoverRadius: 6,
+            hoverBackgroundColor: 'yellow',
+            interaction: {
+                mode: 'nearest',
+                intersect: false,
+                axis: 'x',
+            },
+        },
+    };
+    window.df_X_line_plot = new Chart(ctx, config);
+}
+
+function updatePointMovementPLot(input) {
+    const RESULT = createDatasetofX(input);
+
+    window.df_X_line_plot.data.datasets = RESULT.DATASETS,
+        window.df_X_line_plot.data.labels = RESULT.LABELS;
+    window.df_X_line_plot.update();
+
+}
+/*
 # =========
 # =====================
 # =====================================
@@ -1162,4 +1337,5 @@ window.onload = function init() {
     default_BM_plots();
     default_BM_dens_plots();
     default_DF_plot();
+    defaultPointMovementPlot();
 }

@@ -59,16 +59,17 @@
                     <div id="bm_input_section"
                         class="bm-input-section">
                         <div class="bm-input-wrapper input-wrapper">
-                            <div>\(d\)</div>
-                            <div id="bm_d_value"
+                            <div>\(C_a\)</div>
+                            <div id="bm_Ca_value"
                                 name="bm_slide_value"
-                                class="bm-slide-value slide-value">-0.001</div>
-                            <input id="bm_d_slide" type="range"
+                                class="bm-slide-value slide-value">10</div>
+                            <input id="bm_Ca_slide" type="range"
                                 class="bm-slide slide"
                                 name="bm_slide"
-                                min="-0.001" max="-0.0001"
-                                step="0.0001" value="-0.001">
-
+                                min="0" max="20"
+                                step="0.5" value="10">
+                            <!-- min="-0.001" max="-0.0001"
+                                step="0.0001" value="-0.001"> -->
                         </div>
                         <div class="bm-input-wrapper input-wrapper">
                             <div>\(t\) (integration time)</div>
@@ -145,6 +146,9 @@
                                 values are grouped. Thus in a
                                 histogram up to 40 bars would be possible.
                             </li>
+                            <li>
+                                \(C_a\): factor of random deviation
+                            </li>
                         </ul>
                     </p>
                     <p>
@@ -185,15 +189,15 @@
                     <div id="bm_dens_input_section"
                         class="bm-dens-input-section">
                         <div class="bm-dens-input-wrapper input-wrapper">
-                            <div>\(d\)</div>
-                            <div id="bm_dens_d_value"
+                            <div>\(C_a\)</div>
+                            <div id="bm_dens_Ca_value"
                                 name="bm_dens_slide_value"
-                                class="bm-dens-slide-value slide-value">-0.001</div>
-                            <input id="bm_dens_d_slide" type="range"
+                                class="bm-dens-slide-value slide-value">10</div>
+                            <input id="bm_dens_Ca_slide" type="range"
                                 class="bm-dens-slide slide"
                                 name="bm_dens_slide"
-                                min="-0.001" max="-0.0001"
-                                step="0.0001" value="-0.001">
+                                min="-0" max="20"
+                                step="0.5" value="10">
 
                         </div>
                         <div class="bm-dens-input-wrapper input-wrapper">
@@ -311,7 +315,7 @@
 
 
 
-                <!-- DRIVNG FUNCTION  -->
+                <!-- DRIVNG FUNCTION  Part 1 -->
                 <div class="description">
                     <h3>Driving function</h3>
                     <p>Following is the diving function. It is the backbone of
@@ -338,6 +342,11 @@
                     <div id="df_plot_container"
                         class="df-plot-container">
                         <canvas id="df_plot" class="canvas"></canvas>
+                    </div>
+
+                    <div id="df_X-plot_container"
+                        class="df-X-plot-container">
+                        <canvas id="df_X_plot" class="canvas"></canvas>
                     </div>
 
                     <div id="df_input_section"
@@ -391,6 +400,11 @@
 
                         </div>
                         <button class="someBtn" id="df_resetBtn">Reset</button>
+                        <div class="X-input-wrapper">
+                            \(y_0\):
+                            <input id="df_X_input_y0" type="text"
+                                class="df_X_input_field" value=1.25 />
+                        </div>
                     </div>
                 </div>
 

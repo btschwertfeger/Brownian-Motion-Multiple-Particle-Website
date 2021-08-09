@@ -16,13 +16,13 @@
 // BROWNIAN MOTION FIRST LINE AND HIST PLOT SETTINGS
 */
 
-const bm_d_slide = document.getElementById('bm_d_slide'),
+const bm_Ca_slide = document.getElementById('bm_Ca_slide'),
     bm_T_slide = document.getElementById('bm_T_slide'),
     bm_n_slide = document.getElementById('bm_nlines_slide'),
     bm_SLIDER = document.getElementsByName('bm_slide'),
     bm_value_fields = document.getElementsByName('bm_slide_value'),
     bm_randomStartValue_checkbox = document.getElementById('bm_randomStartValueCheckbox'),
-    bm_plot_variables = ["d", "T", "nlines", "randomStartValue"];
+    bm_plot_variables = ["Ca", "T", "nlines", "randomStartValue"];
 
 const bm_RESET_BTN = document.getElementById('bm_resetBtn');
 bm_RESET_BTN.onclick = function () {
@@ -41,7 +41,8 @@ bm_RESET_BTN.onclick = function () {
 const bm_AGAIN_BTN = document.getElementById('bm_againBtn');
 bm_AGAIN_BTN.onclick = function () {
     window.updateBM_plots({
-        d: bm_d_slide.value,
+        // d: bm_d_slide.value,
+        Ca: bm_Ca_slide.value,
         T: bm_T_slide.value,
         nlines: bm_n_slide.value,
         randomStartValue: bm_randomStartValue_checkbox.checked,
@@ -56,7 +57,7 @@ for (let entry = 0; entry < bm_SLIDER.length; entry++) {
     }
     bm_SLIDER[entry].onchange = function () {
         window.updateBM_plots({
-            d: bm_d_slide.value,
+            Ca: bm_Ca_slide.value,
             T: bm_T_slide.value,
             nlines: bm_n_slide.value,
             randomStartValue: bm_randomStartValue_checkbox.checked,
@@ -66,7 +67,7 @@ for (let entry = 0; entry < bm_SLIDER.length; entry++) {
 
 bm_randomStartValue_checkbox.onchange = function () {
     window.updateBM_plots({
-        d: bm_d_slide.value,
+        Ca: bm_Ca_slide.value,
         T: bm_T_slide.value,
         nlines: bm_n_slide.value,
         randomStartValue: bm_randomStartValue_checkbox.checked,
@@ -83,12 +84,12 @@ bm_randomStartValue_checkbox.onchange = function () {
 */
 
 
-const bm_dens_d_slide = document.getElementById('bm_dens_d_slide'),
+const bm_dens_Ca_slide = document.getElementById('bm_dens_Ca_slide'),
     bm_dens_T_slide = document.getElementById('bm_dens_T_slide'),
     bm_dens_SLIDER = document.getElementsByName('bm_dens_slide'),
     bm_dens_value_fields = document.getElementsByName('bm_dens_slide_value'),
     bm_dens_randomStartValue_checkbox = document.getElementById('bm_dens_randomStartValueCheckbox'),
-    bm_dens_plot_variables = ["d", "T", "randomStartValue"];
+    bm_dens_plot_variables = ["Ca", "T", "randomStartValue"];
 
 const bm_dens_RESET_BTN = document.getElementById('bm_dens_resetBtn');
 bm_dens_RESET_BTN.onclick = function () {
@@ -107,7 +108,7 @@ bm_dens_RESET_BTN.onclick = function () {
 const bm_dens_AGAIN_BTN = document.getElementById('bm_dens_againBtn');
 bm_dens_AGAIN_BTN.onclick = function () {
     window.updateBM_dens_plots({
-        d: bm_dens_d_slide.value,
+        Ca: bm_dens_Ca_slide.value,
         T: bm_dens_T_slide.value,
         randomStartValue: bm_dens_randomStartValue_checkbox.checked,
     });
@@ -121,7 +122,7 @@ for (let entry = 0; entry < bm_dens_SLIDER.length; entry++) {
     }
     bm_dens_SLIDER[entry].onchange = function () {
         window.updateBM_dens_plots({
-            d: bm_dens_d_slide.value,
+            Ca: bm_dens_Ca_slide.value,
             T: bm_dens_T_slide.value,
             randomStartValue: bm_dens_randomStartValue_checkbox.checked,
         });
@@ -129,7 +130,7 @@ for (let entry = 0; entry < bm_dens_SLIDER.length; entry++) {
 }
 bm_dens_randomStartValue_checkbox.onchange = function () {
     window.updateBM_dens_plots({
-        d: bm_dens_d_slide.value,
+        Ca: bm_dens_Ca_slide.value,
         T: bm_dens_T_slide.value,
         randomStartValue: bm_dens_randomStartValue_checkbox.checked,
     });
@@ -156,6 +157,7 @@ const df_a_slide = document.getElementById('df_a_slide'),
 const df_RESET_BTN = document.getElementById('df_resetBtn');
 df_RESET_BTN.onclick = function () {
     window.default_DF_plot(); // resets the plot
+    window.defaultPointMovementPlot();
     df_SLIDER.forEach((element, index) => { // reset the sliders
         const default_value = window.bm_default_input[df_plot_variables[index]];
         document.getElementById(element.id).value = default_value;
@@ -179,5 +181,37 @@ for (let entry = 0; entry < df_SLIDER.length; entry++) {
             c: df_c_slide.value,
             d: df_d_slide.value,
         });
+        window.updatePointMovementPLot({
+            y0: parseFloat(X_df_X_input_y0.value),
+            h: window.default_input_X.h,
+            N: window.default_input_X.N,
+            a: df_a_slide.value,
+            b: df_b_slide.value,
+            c: df_c_slide.value,
+            d: df_d_slide.value,
+        });
     }
+}
+
+/*
+# =========
+# =====================
+# Moving Particle
+*/
+
+const X_df_X_input_y0 = document.getElementById("df_X_input_y0");
+X_df_X_input_y0.onchange = function () {
+    window.updatePointMovementPLot({
+        y0: parseFloat(X_df_X_input_y0.value),
+        h: window.default_input_X.h,
+        N: window.default_input_X.N,
+        a: df_a_slide.value,
+        b: df_b_slide.value,
+        c: df_c_slide.value,
+        d: df_d_slide.value,
+        // a: window.default_input_X.a,
+        // b: window.default_input_X.b,
+        // c: window.default_input_X.c,
+        // d: window.default_input_X.d,
+    });
 }
