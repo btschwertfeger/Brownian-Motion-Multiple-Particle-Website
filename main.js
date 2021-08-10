@@ -20,9 +20,9 @@
 const cumulativeSum = (sum => value => sum += value)(0);
 
 function range(start, end, step) {
-    var range = [];
-    var typeofStart = typeof start;
-    var typeofEnd = typeof end;
+    let range = [],
+        typeofStart = typeof start,
+        typeofEnd = typeof end;
 
     if (step === 0) {
         throw TypeError("Step cannot be zero.");
@@ -75,7 +75,7 @@ function poolColors(a) {
 }
 
 function rnorm() {
-    var u = 0,
+    let u = 0,
         v = 0;
     while (u === 0) u = Math.random(); //Converting [0,1) to (0,1)
     while (v === 0) v = Math.random();
@@ -112,7 +112,7 @@ window.bm_active_values = {};
 window.font_famliy = "Helvetica";
 
 function driving_function(x, a, b, c, d) {
-    return (d * Math.pow(x, 3) + c * Math.pow(x, 2) + b * x - a)
+    return (d * Math.pow(x, 3) + c * Math.pow(x, 2) + b * x - a);
 }
 
 function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
@@ -128,10 +128,10 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
 
     if (!input.randomStartValue) {
         // R: x<-matrix(10,Nparticle,N) # Initial condition, all = 0
-        x = [...new Array(input.Nparticle)].map(() => [...new Array(N)].map(() => 10))
+        x = [...new Array(input.Nparticle)].map(() => [...new Array(N)].map(() => 10));
     } else {
         // R: // #x<-matrix(rnorm(Nparticle)*10,Nparticle,N) # Initial condition,
-        x = [...new Array(input.Nparticle)].map(() => [...new Array(N)].map(() => rnorm() * 10))
+        x = [...new Array(input.Nparticle)].map(() => [...new Array(N)].map(() => rnorm() * 10));
     }
     for (let row = 0; row < input.Nparticle; row++) {
         for (let i = 0; i < N - 1; i++) {
@@ -155,7 +155,7 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
         ami = Math.min(...xmin_rows.map(e => isNaN(e) ? Number.MAX_SAFE_INTEGER : e));
     const ama = Math.max(ama2, -ami) / 2;
 
-    console.log(ama, ami, ama2)
+    // console.log(ama, ami, ama2)
     window.bm_active_values = {
         Ca: input.Ca,
         a: input.a,
@@ -189,10 +189,8 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
                 minNum: bin_brakes[i],
                 maxNum: bin_brakes[i + 1],
                 count: 0,
-            })
+            });
         }
-
-        // console.log([...new Array(40)].map((elem, index) => bin_brakes[index] - bin_brakes[index + 1]))
 
         // ASSIGN ALL VALUES TO THEIR BINS
         for (let step = 0; step < N; step++) { // loop over all timesteps
@@ -288,7 +286,8 @@ function createBMDatasets(input) {
     const bin_brakes = [...new Array(bars + 1)].map((elem, index) => (index - bars / 2) * RESULT.ama / 10);
 
     // console.log(RESULT.ama)
-    console.log(bin_brakes)
+    // console.log(bin_brakes)
+
     //Setup Bins
     let default_bins = []
     for (let i = 0; i < bin_brakes.length - 1; i++) {
@@ -297,7 +296,7 @@ function createBMDatasets(input) {
             minNum: bin_brakes[i],
             maxNum: bin_brakes[i + 1],
             count: 0,
-        })
+        });
     }
 
     // ASSIGN DATA
@@ -308,11 +307,11 @@ function createBMDatasets(input) {
             xAxisID: 'x',
             data: RESULT.x[line],
             fill: false,
-            borderColor: dynamicColors(),
+            borderColor: dynamicColors(), // "#A1142E",
             pointRadius: 0,
             type: 'line',
             linewidth: .5,
-        })
+        });
 
         // HISTOGRAM
         // Loop through data and add to bin's count
@@ -335,7 +334,7 @@ function createBMDatasets(input) {
         histlabels = new Array(default_bins.length);
     for (let i = 0; i < default_bins.length; i++) {
         histdata[i] = (default_bins[i].count) / RESULT.N / LINES;
-        histlabels[i] = Math.round((default_bins[i].minNum + default_bins[i].maxNum) / 2, 1)
+        histlabels[i] = Math.round((default_bins[i].minNum + default_bins[i].maxNum) / 2, 1);
     }
 
     const BM_HIST_CHART_DATASET = {
@@ -386,8 +385,8 @@ function default_BM_plots(input = window.bm_default_input) {
                     text: 'Brownian motion',
                     font: {
                         Family: window.font_famliy,
-                        size: 18
-                    }
+                        size: 18,
+                    },
                 },
                 legend: {
                     position: 'top',
@@ -414,7 +413,7 @@ function default_BM_plots(input = window.bm_default_input) {
                         font: {
                             family: window.font_famliy,
                             size: 16,
-                        }
+                        },
                     },
                 },
                 y: {
@@ -424,27 +423,26 @@ function default_BM_plots(input = window.bm_default_input) {
                         text: 'y',
                         font: {
                             family: window.font_famliy,
-                            size: 16
+                            size: 16,
                         },
                     },
                 },
             },
-
             animations: {
                 radius: {
                     duration: 400,
                     easing: 'linear',
-                    loop: (ctx) => ctx.activate
-                }
+                    loop: (ctx) => ctx.activate,
+                },
             },
             hoverRadius: 8,
             hoverBackgroundColor: 'yellow',
             interaction: {
                 mode: 'nearest',
                 intersect: false,
-                axis: 'x'
-            }
-        }
+                axis: 'x',
+            },
+        },
     };
     window.bm_line_plot = new Chart(ctx1, config1);
 
@@ -469,8 +467,8 @@ function default_BM_plots(input = window.bm_default_input) {
                     text: 'Histogram',
                     font: {
                         Family: window.font_famliy,
-                        size: 18
-                    }
+                        size: 18,
+                    },
                 },
                 legend: {
                     position: 'top',
@@ -486,7 +484,7 @@ function default_BM_plots(input = window.bm_default_input) {
                         font: {
                             family: window.font_famliy,
                             size: 16,
-                        }
+                        },
                     },
                 },
                 y: {
@@ -505,16 +503,16 @@ function default_BM_plots(input = window.bm_default_input) {
                 radius: {
                     duration: 400,
                     easing: 'linear',
-                    loop: (ctx) => ctx.activate
-                }
+                    loop: (ctx) => ctx.activate,
+                },
             },
             hoverBackgroundColor: 'yellow',
             interaction: {
                 mode: 'nearest',
                 intersect: false,
-                axis: 'x'
-            }
-        }
+                axis: 'x',
+            },
+        },
     };
     window.bm_hist_plot = new Chart(ctx2, config2);
 }
@@ -526,6 +524,7 @@ function updateBM_plots(input) {
     let line_chart = window.bm_line_plot,
         hist_chart = window.bm_hist_plot,
         values = JSON.parse(JSON.stringify(window.bm_default_input));
+
     values.T = input.T,
         values.Ca = input.Ca,
         values.nlines = input.nlines,
@@ -535,11 +534,11 @@ function updateBM_plots(input) {
 
     line_chart.data.labels = RESULT.values.t,
         line_chart.data.datasets = RESULT.BM_LINE_CHART_DATASETS;
-    line_chart.update()
+    line_chart.update();
 
     hist_chart.data.labels = RESULT.BM_HIST_CHART_DATASET.labels,
         hist_chart.data.datasets = [RESULT.BM_HIST_CHART_DATASET];
-    hist_chart.update()
+    hist_chart.update();
 }
 
 /*
@@ -560,7 +559,7 @@ window.contour_plot_layout = {
         text: 'i) Density over time and space',
         font: {
             family: window.font_famliy,
-            size: 18
+            size: 18,
         },
         xref: 'paper',
         x: 0.05,
@@ -571,8 +570,8 @@ window.contour_plot_layout = {
             font: {
                 family: font_famliy,
                 size: 18,
-                color: '#7f7f7f'
-            }
+                color: '#7f7f7f',
+            },
         },
     },
     yaxis: {
@@ -581,12 +580,12 @@ window.contour_plot_layout = {
             font: {
                 family: font_famliy,
                 size: 18,
-                color: '#7f7f7f'
+                color: '#7f7f7f',
             },
         },
     },
-
 };
+
 window.contour_plot_config = {
     toImageButtonOptions: {
         format: 'svg',
@@ -661,9 +660,9 @@ function createBM_density_Datasets(input) {
             (RESULT.h[RESULT.N - 1][index] + (RESULT.h[RESULT.N - 2][index])) / RESULT.Nparticle / 2)
     ];
     const SIX_DATASETS = [...new Array(six_data_arrays.length)].map((elem, index) => [{
-        data: six_data_arrays[index]
+        data: six_data_arrays[index],
     }, {
-        data: six_data_arrays[index]
+        data: six_data_arrays[index],
     }])
 
     for (let dataset = 0; dataset < SIX_DATASETS.length; dataset++) {
@@ -724,7 +723,7 @@ function createBM_density_Datasets(input) {
         tableTicks: tableData.values,
         SIX_DATASETS: SIX_DATASETS,
         contour_plot_data: contour_plot_data,
-        bin_brakes: RESULT.bin_brakes
+        bin_brakes: RESULT.bin_brakes,
     }
 }
 
@@ -752,8 +751,8 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                     text: 'a)',
                     font: {
                         Family: window.font_famliy,
-                        size: 16
-                    }
+                        size: 16,
+                    },
                 },
                 legend: {
                     display: false,
@@ -764,11 +763,11 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                     display: true,
                     title: {
                         display: true,
-                        text: 't',
+                        text: 'value',
                         font: {
                             family: window.font_famliy,
                             size: 16,
-                        }
+                        },
                     },
                 },
                 y: {
@@ -778,7 +777,7 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                         text: 'hstat[]',
                         font: {
                             family: window.font_famliy,
-                            size: 16
+                            size: 16,
                         },
                     },
                 },
@@ -819,8 +818,8 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                     text: 'b)',
                     font: {
                         Family: window.font_famliy,
-                        size: 16
-                    }
+                        size: 16,
+                    },
                 },
                 legend: {
                     position: 'top',
@@ -843,8 +842,8 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                         // max: ticks[ticks.length - 1],
 
                         // forces step size to be 5 units
-                        stepSize: .01 // <----- This prop sets the stepSize
-                    }
+                        stepSize: .01, // <----- This prop sets the stepSize
+                    },
 
                 },
                 y: {
@@ -854,7 +853,7 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                         text: 'Density',
                         font: {
                             family: window.font_famliy,
-                            size: 16
+                            size: 16,
                         },
                     },
                 },
@@ -863,17 +862,17 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                 radius: {
                     duration: 400,
                     easing: 'linear',
-                    loop: (ctx) => ctx.activate
-                }
+                    loop: (ctx) => ctx.activate,
+                },
             },
             hoverRadius: 2,
             hoverBackgroundColor: 'red',
             interaction: {
                 mode: 'nearest',
                 intersect: false,
-                axis: 'x'
-            }
-        }
+                axis: 'x',
+            },
+        },
     };
     window.bm_dens_table_plot = new Chart(ctx2, config2);
 
@@ -918,8 +917,8 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                             text: titles[entry],
                             font: {
                                 Family: window.font_famliy,
-                                size: 16
-                            }
+                                size: 16,
+                            },
                         },
                         legend: {
                             position: 'top',
@@ -935,7 +934,7 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                                 font: {
                                     family: window.font_famliy,
                                     size: 14,
-                                }
+                                },
                             },
                         },
                         y: {
@@ -954,17 +953,17 @@ function default_BM_dens_plots(input = window.bm_default_input) {
                         radius: {
                             duration: 400,
                             easing: 'linear',
-                            loop: (ctx) => ctx.activate
-                        }
+                            loop: (ctx) => ctx.activate,
+                        },
                     },
                     hoverRadius: 6,
                     hoverBackgroundColor: 'yellow',
                     interaction: {
                         mode: 'nearest',
                         intersect: false,
-                        axis: 'x'
-                    }
-                }
+                        axis: 'x',
+                    },
+                },
             };
 
         six_charts[entry] = new Chart(ctx, config)
@@ -992,20 +991,20 @@ function updateBM_dens_plots(input) {
       # ----- ---- ---- ---- Function to update DENSITY ANALYSIS plots after input
     */
     let values = JSON.parse(JSON.stringify(window.bm_default_input));
-    values.T = input.T;
-    values.Ca = input.Ca;
-    values.randomStartValue = input.randomStartValue;
+    values.T = input,
+        values.Ca = input.Ca,
+        values.randomStartValue = input.randomStartValue;
 
     const RESULT = createBM_density_Datasets(values);
 
     let line_chart = window.bm_dens_line_plot;
     //line_chart.data.labels = RESULT.LABELS; //[...new Array(RESULT.BM_DENSE_LINE_CHART_DATASET.data.length)].map((elem, i) => i);;
     line_chart.data.datasets = RESULT.BM_DENSE_LINE_CHART_DATASETS;
-    line_chart.update()
+    line_chart.update();
 
     let table_chart = window.bm_dens_table_plot;
     table_chart.data.datasets = RESULT.BM_DENS_TABLE_CHART_DATASETS;
-    table_chart.update()
+    table_chart.update();
 
     let six_charts = [
         window.bm_dens_line_1of6, window.bm_dens_line_2of6,
@@ -1016,7 +1015,7 @@ function updateBM_dens_plots(input) {
     for (let entry = 0; entry < six_charts.length; entry++) {
         let chart = six_charts[entry];
         chart.data.datasets = RESULT.SIX_DATASETS[entry];
-        chart.update()
+        chart.update();
     }
 
     // CONTOUR PLOT
@@ -1024,7 +1023,7 @@ function updateBM_dens_plots(input) {
         'contour_plot',
         RESULT.contour_plot_data,
         window.contour_plot_layout,
-        window.contour_plot_config
+        window.contour_plot_config,
     );
 }
 
@@ -1097,8 +1096,8 @@ function default_DF_plot(input = window.bm_default_input) {
                     text: 'Driving function',
                     font: {
                         Family: window.font_famliy,
-                        size: 18
-                    }
+                        size: 18,
+                    },
                 },
                 legend: {
                     position: 'top',
@@ -1107,7 +1106,7 @@ function default_DF_plot(input = window.bm_default_input) {
                         font: {
                             Family: 'Times New Roman',
                             style: 'italic',
-                            // size: 14
+                            // size: 14,
                         },
                     },
                 },
@@ -1117,7 +1116,7 @@ function default_DF_plot(input = window.bm_default_input) {
                         labelPointStyle: function (context) {
                             return {
                                 pointStyle: 'rectRot',
-                                rotation: 0
+                                rotation: 0,
                             };
                         },
                     },
@@ -1144,7 +1143,7 @@ function default_DF_plot(input = window.bm_default_input) {
                         text: 'y',
                         font: {
                             family: window.font_famliy,
-                            size: 16
+                            size: 16,
                         },
                     },
                     min: -200,
@@ -1156,16 +1155,16 @@ function default_DF_plot(input = window.bm_default_input) {
                 radius: {
                     duration: 400,
                     easing: 'linear',
-                    loop: (ctx) => ctx.activate
-                }
+                    loop: (ctx) => ctx.activate,
+                },
             },
             hoverRadius: 6,
             hoverBackgroundColor: 'yellow',
             interaction: {
                 mode: 'nearest',
                 intersect: false,
-                axis: 'x'
-            }
+                axis: 'x',
+            },
         },
     };
     window.df_plot = new Chart(ctx, config);
@@ -1201,7 +1200,7 @@ function computeX(input = window.default_input_X) {
         y[i] = y[i - 1] + input.h * driving_function(y[i - 1], input.a, input.b, input.c, input.d);
     }
     return {
-        y: y
+        y: y,
     };
 }
 
@@ -1244,7 +1243,7 @@ function defaultPointMovementPlot() {
                     font: {
                         Family: window.font_famliy,
                         size: 16
-                    }
+                    },
                 },
                 legend: {
                     display: true,
@@ -1322,8 +1321,8 @@ function updatePointMovementPLot(input) {
     window.df_X_line_plot.data.datasets = RESULT.DATASETS,
         window.df_X_line_plot.data.labels = RESULT.LABELS;
     window.df_X_line_plot.update();
-
 }
+
 /*
 # =========
 # =====================
