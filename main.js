@@ -122,7 +122,7 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
     // function f_fun(y, a, b, c, d) {
     //     return (d * Math.pow(y, 3) + c * Math.pow(y, 2) + b * y - a)
     // }
-    let N = input.T / input.h
+    const N = input.T / input.h;
     let t = [...new Array(N)].map((entry, index) => index * input.h),
         x = 0;
 
@@ -991,8 +991,8 @@ function updateBM_dens_plots(input) {
       # ----- ---- ---- ---- Function to update DENSITY ANALYSIS plots after input
     */
     let values = JSON.parse(JSON.stringify(window.bm_default_input));
-    values.T = input,
-        values.Ca = input.Ca,
+    values.T = parseInt(input.T),
+        values.Ca = parseFloat(input.Ca),
         values.randomStartValue = input.randomStartValue;
 
     const RESULT = createBM_density_Datasets(values);
@@ -1038,17 +1038,56 @@ function updateBM_dens_plots(input) {
 */
 
 function integrierte_driving_function(x, b, c, d) {
-    return -(d * (1 / 4) * Math.pow(x, 4) + c * 1 / 3 * Math.pow(x, 2) + b * (1 / 2) * Math.pow(x, 2) - x);
+    return -((d / 4) * Math.pow(x, 4) + (c / 3) * Math.pow(x, 2) + (b / 2) * Math.pow(x, 2) - x);
 }
 
 function create_DF_dataset(input = window.bm_default_input) {
     const len = 240;
     const xVals = [...new Array(len)].map((e, i) => (i - (len / 2)));
+    const driving_function_yVals = [...new Array(len)].map((e, i) => driving_function(xVals[i], input.a, input.b, input.c, input.d));
+
+    let positiveP = new Array(),
+        negativeP = new Array();
+    for (let point = 0; point < driving_function_yVals.length; point++) {
+        if (driving_function_yVals[point] > 0) {
+            positiveP.push({
+                x: xVals[point],
+                y: driving_function_yVals[point],
+            });
+        } else if (driving_function_yVals[point] < 0) {
+            negativeP.push({
+                x: xVals[point],
+                y: driving_function_yVals[point],
+            });
+        }
+    }
+
+
     const DATASETS = [{
+        /* positive points */
+        label: "f(x) > 0",
+        xAxisID: 'x',
+        yAxisID: 'y',
+        data: positiveP,
+        fill: false,
+        backgroundColor: 'rgb(0,255,0,.7)',
+        pointRadius: 2,
+        type: 'scatter',
+    }, {
+        /* negative points */
+        label: "f(x) < 0",
+        xAxisID: 'x',
+        yAxisID: 'y',
+        data: negativeP,
+        fill: false,
+        backgroundColor: 'rgb(255,0,0,.7)',
+        pointRadius: 2,
+        type: 'scatter',
+    }, {
         label: "f(x)",
         xAxisID: 'x',
         yAxisID: 'y',
-        data: [...new Array(len)].map((e, i) => driving_function(xVals[i], input.a, input.b, input.c, input.d)),
+        data: driving_function_yVals,
         fill: false,
         borderColor: "black",
         pointRadius: 0,
@@ -1065,6 +1104,7 @@ function create_DF_dataset(input = window.bm_default_input) {
         type: 'line',
         linewidth: 1,
     }];
+
 
     return {
         labels: xVals,

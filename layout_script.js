@@ -152,7 +152,8 @@ const df_a_slide = document.getElementById('df_a_slide'),
     df_d_slide = document.getElementById('df_d_slide'),
     df_SLIDER = document.getElementsByName('df_slide'),
     df_value_fields = document.getElementsByName('df_slide_value'),
-    df_plot_variables = ["a", "b", "c", "d"];
+    df_plot_variables = ["a", "b", "c", "d"],
+    X_df_X_input_y0 = document.getElementById("df_X_input_y0");
 
 const df_RESET_BTN = document.getElementById('df_resetBtn');
 df_RESET_BTN.onclick = function () {
@@ -166,6 +167,7 @@ df_RESET_BTN.onclick = function () {
         const default_value = window.bm_default_input[df_plot_variables[index]];
         document.getElementById(element.id).innerHTML = default_value;
     });
+    X_df_X_input_y0.value = "1.25";
 }
 
 for (let entry = 0; entry < df_SLIDER.length; entry++) {
@@ -193,13 +195,6 @@ for (let entry = 0; entry < df_SLIDER.length; entry++) {
     }
 }
 
-/*
-# =========
-# =====================
-# Moving Particle
-*/
-
-const X_df_X_input_y0 = document.getElementById("df_X_input_y0");
 X_df_X_input_y0.onchange = function () {
     window.updatePointMovementPLot({
         y0: parseFloat(X_df_X_input_y0.value),
@@ -209,9 +204,5 @@ X_df_X_input_y0.onchange = function () {
         b: df_b_slide.value,
         c: df_c_slide.value,
         d: df_d_slide.value,
-        // a: window.default_input_X.a,
-        // b: window.default_input_X.b,
-        // c: window.default_input_X.c,
-        // d: window.default_input_X.d,
     });
 }
