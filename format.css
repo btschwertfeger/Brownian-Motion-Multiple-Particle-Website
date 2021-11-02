@@ -71,7 +71,7 @@ a:hover {
 }
 
 .input-wrapper {
-  min-width: 230px;/*290px;*/
+  min-width: 230px; /*290px;*/
   margin: 5px;
 }
 .input-wrapper,
@@ -82,7 +82,7 @@ a:hover {
 .slide {
   float: right;
   -webkit-appearance: none;
-  min-width: 165px;/*225px;*/
+  min-width: 165px; /*225px;*/
   height: 14px;
 
   outline: none;
@@ -156,43 +156,6 @@ a:hover {
   /* transform: translateY(4px); */
 }
 
-/* PLOT AND INPUT CONTAINER */
-.bm-plot-content-wrapper,
-.bm-dens-plot-content-wrapper,
-.bm-dens-add-plot-content-wrapper,
-.df-plot-content-wrapper,
-.df-X-plot-content-wrapper {
-  border-radius: 30px 30px 0px 0px;
-  box-shadow: 26px 0px 52px #969696, -26px -26px 52px #ffffff;
-}
-
-.bm-input-section,
-.bm-dens-input-section,
-.df-input-section,
-.df-X-input-section {
-  border-radius: 0px 0px 30px 30px;
-  box-shadow: 26px 26px 52px #969696, -26px -26px 52px #ffffff;
-}
-
-.bm-line-plot-container,
-.bm-hist-plot-container,
-.bm-dens-line-plot-container,
-.bm-dens-table-plot-container,
-.df-plot-container,
-.df-X-plot-container {
-
-  z-index: 5;
-  position: relative;
-  -webkit-transform: translateZ(0);
-
-  position: relative;
-  -webkit-appearance: none;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
-
 .switch {
   position: relative;
   display: inline-block;
@@ -222,7 +185,7 @@ a:hover {
   -ms-transition: opacity 0.3 ease-in-out;
   -o-transition: opacity 0.3 ease-in-out;
 }
-.switch-slider:hover{
+.switch-slider:hover {
   opacity: 1;
 }
 .switch-slider:before {
@@ -259,7 +222,40 @@ input:checked + .switch-slider:before {
   border-radius: 50%;
 }
 
+/* PLOT AND INPUT CONTAINER */
+.bm-plot-content-wrapper,
+.bm-dens-plot-content-wrapper,
+.bm-dens-add-plot-content-wrapper,
+.df-plot-content-wrapper,
+.df-X-plot-content-wrapper {
+  border-radius: 30px 30px 0px 0px;
+  box-shadow: 26px 0px 52px #969696, -26px -26px 52px #ffffff;
+}
 
+.bm-input-section,
+.bm-dens-input-section,
+.df-input-section,
+.df-X-input-section {
+  border-radius: 0px 0px 30px 30px;
+  box-shadow: 26px 26px 52px #969696, -26px -26px 52px #ffffff;
+}
+
+.bm-line-plot-container,
+.bm-hist-plot-container,
+.bm-dens-line-plot-container,
+.bm-dens-table-plot-container,
+.df-plot-container,
+.df-X-plot-container {
+  z-index: 5;
+  position: relative;
+  -webkit-transform: translateZ(0);
+
+  position: relative;
+  -webkit-appearance: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
 
 /*
 # =========
@@ -327,7 +323,6 @@ input:checked + .switch-slider:before {
   /* box-shadow: 8px 8px 16px #969696, -8px -8px 16px #ffffff; */
 }
 
-
 /* ----- ----- ----  */
 /* PLOTS in DENS ANALYSIS SECTION */
 
@@ -355,22 +350,22 @@ input:checked + .switch-slider:before {
 .bm-line-3-plot-container,
 .bm-line-4-plot-container,
 .bm-line-5-plot-container,
-.bm-line-6-plot-container{
+.bm-line-6-plot-container {
   margin: 0 auto;
   width: 95%;
   height: 200px;
   border-radius: 30px 30px 30px 30px;
   padding-right: 2%;
 }
-.contour-plot-wrapper{
+.contour-plot-wrapper {
   height: 650px;
   width: 100%;
   margin: 0 auto;
   padding: 10px;
 }
-.contour-plot-container{
-  width: 95%; 
-  height: 630px; 
+.contour-plot-container {
+  width: 95%;
+  height: 630px;
   margin: 0 auto;
 }
 
@@ -434,7 +429,7 @@ input:checked + .switch-slider:before {
   height: 500px;
 }
 
-.X-input-wrapper{
+.X-input-wrapper {
   display: inline-block;
   vertical-align: top;
   margin: 10px 0px 10px 15px;
@@ -456,12 +451,12 @@ input:checked + .switch-slider:before {
 
   border: none;
   border-radius: 10px;
-  
+
   text-align: center;
   color: black;
   background-color: #ffffff;
   box-shadow: inset 2px 2px 16px #969696, inset -2px -2px 16px #ffffff;
-  
+
   outline: none;
   -webkit-appearance: none;
   -webkit-box-sizing: border-box;
