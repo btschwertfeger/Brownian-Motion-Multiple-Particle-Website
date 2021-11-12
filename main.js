@@ -123,7 +123,8 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
     //     return (d * Math.pow(y, 3) + c * Math.pow(y, 2) + b * y - a)
     // }
     const N = input.T / input.h;
-    let t = [...new Array(N)].map((entry, index) => index * input.h),
+    let
+        t = [...new Array(N)].map((entry, index) => index * input.h),
         x = 0;
 
     if (!input.randomStartValue) {
@@ -139,7 +140,8 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
         }
     }
 
-    const xmax_rows = x.map(function (row) {
+    const
+        xmax_rows = x.map(function (row) {
             return Math.max.apply(Math, row);
         }),
         xmin_rows = x.map(function (row) {
@@ -175,7 +177,8 @@ function calculateBM(input = window.bm_default_input, densityAnalysis = false) {
 
     if (densityAnalysis) {
         const bars = 40;
-        let h = [...new Array(N)].map(() => [...new Array(bars)].map(() => 0)),
+        let
+            h = [...new Array(N)].map(() => [...new Array(bars)].map(() => 0)),
             hstat = [...new Array(bars)].map(() => 0), //[...new Array(N)].map(() => 0),
             bin_brakes = [...new Array(bars + 1)].map((elem, index) => (index - bars / 2) * ama / 10);
 
@@ -1038,7 +1041,7 @@ function updateBM_dens_plots(input) {
 */
 
 function integrierte_driving_function(x, b, c, d) {
-    return -((d / 4) * Math.pow(x, 4) + (c / 3) * Math.pow(x, 2) + (b / 2) * Math.pow(x, 2) - x);
+    return -((d / 4) * Math.pow(x, 4) + (c / 3) * Math.pow(x, 3) + (b / 2) * Math.pow(x, 2) - x);
 }
 
 function create_DF_dataset(input = window.bm_default_input) {
