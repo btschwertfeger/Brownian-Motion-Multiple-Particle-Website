@@ -66,6 +66,11 @@ a {
   color: blue;
   transition: color 0.2s ease-in-out;
 }
+#footer a {
+  color: black;
+}
+
+#footer a:hover,
 a:hover {
   color: red;
 }
