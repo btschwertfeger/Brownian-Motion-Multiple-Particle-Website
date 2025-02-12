@@ -4,392 +4,509 @@
     ## copyright by Benjamin Thomas Schwertfeger (July 2021)
     ############
 -->
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Brownian Motion</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="format.css">
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/styles.css" />
     <!-- <link rel="icon" type="image/x-icon"
         href="https://www.awi.de/typo3conf/ext/sms_boilerplate/Resources/Public/Images/AWI/awi_logo.svg"> -->
 
     <!-- CHART JS -->
-    <script src='https://cdn.jsdelivr.net/npm/chart.js@3.3.1/dist/chart.min.js'> </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.1/dist/chart.min.js"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
     <!-- PLOTLY FOR CONTOURPLOT -->
     <script src="https://cdn.plot.ly/plotly-2.3.0.min.js"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <!-- <img
             src="https://upload.wikimedia.org/wikipedia/commons/f/f7/AWI_Logo_2017.svg"
             style="position:absolute; right: 10px; top: 10px; width: 15%;" \> -->
     <div class="main">
-        <div class="placeholder" style="width:100%;height:42px"></div>
-        <div class="headline" style="text-align:center;">
-            <h1>Brownian Motion</h1><br>
+      <div class="placeholder" style="width: 100%; height: 42px"></div>
+      <div class="headline" style="text-align: center">
+        <h1>Brownian Motion</h1>
+        <br />
+      </div>
+
+      <!-- BROWNIAN MOTION -->
+      <div class="bm-wrapper">
+        <div class="description">
+          <h3>General</h3>
+          <ul>
+            <li>
+              <a
+                href="https://www.tpi.uni-jena.de/~wipf/lectures/pfad/pfad7.pdf"
+                target="_blank"
+                >Overview article by A. Wipf, University of Jena
+              </a>
+            </li>
+            <li>
+              <a href="https://people.bath.ac.uk/maspm/book.pdf" target="_blank"
+                ><i>Brownian Motion</i></a
+              >
+              by Peter Mörters and Yuval Peres
+            </li>
+          </ul>
+          <p>
+            <i
+              >"The Brownian process describes the disordered motion of small
+              particles suspended in a liquid. It is believed that Brown studied
+              pollen particles floating in water under the microscope. He
+              observed minute particles executing a jittery motion. The theory
+              of this motion has been invented by Albert Einstein and Marian
+              Smoludchowski. The mathematically rigorous construction of the
+              corresponding stochastic process has been developed by Norbert
+              Wiener."</i
+            >
+            (Extracted from: A. Wipf <i>"Path Integrals"</i> (2019), p. 60,
+            Brownian Motion, University of Jena)
+          </p>
+          <p>#brownianMotion #multipleParticle #forwardModeling</p>
+          <ul>
+            <li>
+              <a href="BrownianMotion.ipynb" download>Download</a>
+              or <a href="BrownianMotion.html" target="_blank">show</a>
+              Jupyter Notebook
+            </li>
+          </ul>
         </div>
 
-        <!-- BROWNIAN MOTION -->
-        <div class="bm-wrapper">
-            <div class="description">
-                <h3>General</h3>
-                <ul>
-                    <li>
-                        <a href="https://www.tpi.uni-jena.de/~wipf/lectures/pfad/pfad7.pdf" target="_blank">Overview
-                            article by A. Wipf,
-                            University of Jena
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://people.bath.ac.uk/maspm/book.pdf" target="_blank"><i>Brownian
-                                Motion</i></a> by
-                        Peter Mörters and Yuval Peres
-                    </li>
-                </ul>
-                <p>
-                    <i>"The Brownian process describes the disordered motion
-                        of
-                        small particles suspended in a
-                        liquid. It is believed that Brown studied pollen
-                        particles floating in water under the microscope.
-                        He observed minute particles executing a jittery
-                        motion.
-                        The theory of this motion has been
-                        invented by Albert Einstein and Marian
-                        Smoludchowski.
-                        The mathematically rigorous construction of
-                        the corresponding stochastic process has been
-                        developed
-                        by Norbert Wiener."</i> (Extraced from: A. Wipf
-                    <i>"Path Integrals"</i> (2019), p. 60, Brownian Motion,
-                    University of Jena)
-                </p>
-                <p>
-                    #brownianMotion #multipleParticle
-                    #forwardModeling
-                </p>
-                <ul>
-                    <li>
-                        <a href="BrownianMotion.ipynb" download>Download</a>
-                        or <a href="BrownianMotion.html" target="_blank">show</a>
-                        Jupyter Notebook
-                    </li>
-                </ul>
-            </div>
-
-            <!-- BROWNIAN MOTION FIRST LINE AND HIST PLOT -->
-            <div class="bm-plot-content-wrapper">
-                <div id="bm_line_plot_container" class="bm-line-plot-container">
-                    <canvas id="bm_line_plot" class="canvas"></canvas>
-                </div>
-                <div id="bm_hist_plot_container" class="bm-hist-plot-container">
-                    <canvas id="bm_hist_plot" class="canvas"></canvas>
-                </div>
-                <div id="bm_input_section" class="bm-input-section">
-                    <div class="bm-input-wrapper input-wrapper">
-                        <div>\(C_a\)</div>
-                        <div id="bm_Ca_value" name="bm_slide_value" class="bm-slide-value slide-value">10</div>
-                        <input id="bm_Ca_slide" type="range" class="bm-slide slide" name="bm_slide" min="0" max="20"
-                            step="0.5" value="10">
-                        <!-- min="-0.001" max="-0.0001"
+        <!-- BROWNIAN MOTION FIRST LINE AND HIST PLOT -->
+        <div class="bm-plot-content-wrapper">
+          <div id="bm_line_plot_container" class="bm-line-plot-container">
+            <canvas id="bm_line_plot" class="canvas"></canvas>
+          </div>
+          <div id="bm_hist_plot_container" class="bm-hist-plot-container">
+            <canvas id="bm_hist_plot" class="canvas"></canvas>
+          </div>
+          <div id="bm_input_section" class="bm-input-section">
+            <div class="bm-input-wrapper input-wrapper">
+              <div>\(C_a\)</div>
+              <div
+                id="bm_Ca_value"
+                name="bm_slide_value"
+                class="bm-slide-value slide-value"
+              >
+                10
+              </div>
+              <input
+                id="bm_Ca_slide"
+                type="range"
+                class="bm-slide slide"
+                name="bm_slide"
+                min="0"
+                max="20"
+                step="0.5"
+                value="10"
+              />
+              <!-- min="-0.001" max="-0.0001"
                                 step="0.0001" value="-0.001"> -->
-                    </div>
-                    <div class="bm-input-wrapper input-wrapper">
-                        <div>\(t\) (integration time)</div>
-                        <div id="bm_T_value" name="bm_slide_value" class="bm-slide-value slide-value">1000</div>
-                        <input id="bm_T_slide" type="range" class="bm-slide slide" name="bm_slide" min="5" max="6000"
-                            step="5" value="1000">
-
-                    </div>
-                    <div class="bm-input-wrapper input-wrapper">
-                        <div>\(N_{particles}\)</div>
-                        <div id="bm_nlines_value" name="bm_slide_value" class="bm-slide-value slide-value">1</div>
-                        <input id="bm_nlines_slide" type="range" class="bm-slide slide" name="bm_slide" min="1" max="50"
-                            step="1" value="1">
-
-                    </div>
-                    <div class="bm-input-wrapper input-wrapper" style="min-width: 100px;">
-                        <div>random start value</div>
-                        <label class="switch">
-                            <input id="bm_randomStartValueCheckbox" type="checkbox">
-                            <span class="switch-slider"></span>
-                        </label>
-                    </div>
-
-                    <button class="someBtn" id="bm_againBtn">Again</button>
-                    <button class="someBtn" id="bm_resetBtn">Reset</button>
-                </div>
+            </div>
+            <div class="bm-input-wrapper input-wrapper">
+              <div>\(t\) (integration time)</div>
+              <div
+                id="bm_T_value"
+                name="bm_slide_value"
+                class="bm-slide-value slide-value"
+              >
+                1000
+              </div>
+              <input
+                id="bm_T_slide"
+                type="range"
+                class="bm-slide slide"
+                name="bm_slide"
+                min="5"
+                max="6000"
+                step="5"
+                value="1000"
+              />
+            </div>
+            <div class="bm-input-wrapper input-wrapper">
+              <div>\(N_{particles}\)</div>
+              <div
+                id="bm_nlines_value"
+                name="bm_slide_value"
+                class="bm-slide-value slide-value"
+              >
+                1
+              </div>
+              <input
+                id="bm_nlines_slide"
+                type="range"
+                class="bm-slide slide"
+                name="bm_slide"
+                min="1"
+                max="50"
+                step="1"
+                value="1"
+              />
+            </div>
+            <div
+              class="bm-input-wrapper input-wrapper"
+              style="min-width: 100px"
+            >
+              <div>random start value</div>
+              <label class="switch">
+                <input id="bm_randomStartValueCheckbox" type="checkbox" />
+                <span class="switch-slider"></span>
+              </label>
             </div>
 
-
-            <div class="placeholder" style="width:100%;height:42px;"></div>
-            <div class="description">
-                <h3>Analysis of the densities</h3>
-                <p>
-                    In the following you have the possibility to have a
-                    closer look at the distributions in certain timesteps.
-                </p>
-                <p>
-                    Explanations:
-                <ul>
-                    <li>
-                        \(t\): integration time in time units (default:
-                        1000)
-                    </li>
-                    <li>
-                        \(n\): stepsize (default: 0.5)
-                    </li>
-                    <li>
-                        \(N\): number of steps (default:
-                        \(t/n = 2000\))
-                    </li>
-                    <li>
-                        \(N_{particles}\): number of the particles
-                        (default:
-                        \(N_{particles} = 1000\))
-                    </li>
-                    <li>
-                        \(h\): matrix with the shape \((N, 40)\)
-                        where \(40\) is the number of equally spaced
-                        categories in
-                        which
-                        the
-                        values are grouped. Thus in a
-                        histogram up to 40 bars would be possible.
-                    </li>
-                    <li>
-                        \(C_a\): factor of random deviation
-                    </li>
-                </ul>
-                </p>
-                <p>
-                    Figure a) represents the distribution of the values
-                    between the
-                    steps \(N/2\) and \(N\).
-                </p>
-                <p>
-                    Figure b) how often does which value occur?
-                </p>
-                <p>
-                    Figure c) shows the distribution of the values in the
-                    first step (R: h[1,]; Python: h[0]). Here it is
-                    to be noted that with fixed starting value in the first
-                    step always the same distribution occurs. However, if
-                    the start is chosen randomly, variations can be seen
-                    here as well.
-                </p>
-                <p>
-                    Figure d), e) and f) show the distributions of
-                    \(N_{particles}\)
-                    in the second, fourth and eighth step, respectively.
-                </p>
-                <p>
-                    Figure g) shows the distribution of \(N_{particles}\) at
-                    step \(N/2\).
-                </p>
-                <p>
-                    Figure h) shows the average of the distributions of the
-                    last and penultimate step.
-                </p>
-
-            </div>
-
-            <!-- BROWNIAN MOTION DENSITY ANALYSIS PART 1 -->
-            <div class="bm-dens-plot-content-wrapper">
-                <div id="bm_dens_input_section" class="bm-dens-input-section">
-                    <div class="bm-dens-input-wrapper input-wrapper">
-                        <div>\(C_a\)</div>
-                        <div id="bm_dens_Ca_value" name="bm_dens_slide_value" class="bm-dens-slide-value slide-value">10
-                        </div>
-                        <input id="bm_dens_Ca_slide" type="range" class="bm-dens-slide slide" name="bm_dens_slide"
-                            min="-0" max="20" step="0.5" value="10">
-
-                    </div>
-                    <div class="bm-dens-input-wrapper input-wrapper">
-                        <div>\(t\) (integration time)</div>
-                        <div id="bm_dens_T_value" name="bm_dens_slide_value" class="bm-dens-slide-value slide-value">
-                            1000</div>
-                        <input id="bm_dens_T_slide" type="range" class="bm-dens_slide slide" name="bm_dens_slide"
-                            min="40" max="2500" step="5" value="1000">
-                    </div>
-                    <div class="bm-dens-input-wrapper input-wrapper" style="min-width: 100px;">
-                        <div>random start value</div>
-                        <label class="switch">
-                            <input id="bm_dens_randomStartValueCheckbox" type="checkbox">
-                            <span class="switch-slider"></span>
-                        </label>
-                    </div>
-                    <!-- <div class="bm-dens-input-wrapper input-wrapper"> -->
-                    <button class="someBtn" id="bm_dens_againBtn">Again</button>
-                    <button class="someBtn" id="bm_dens_resetBtn">Reset</button>
-                    <!-- </div> -->
-                </div>
-                <div class="placeholder" style="width:100%;height:40px"></div>
-
-                <!-- FIRST TWO PLOTS - HISTOGRAM OF LAST 1000 STEPS AND TABLE PLOT -->
-                <div class="row-wrapper">
-                    <div class="col-left">
-                        <div id="bm_dens_line_plot_container" class="bm-dens-line-hist-plot-container
-                                dens-plot-styling">
-                            <canvas id="bm_dens_line_plot" class="canvas"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-right">
-                        <div id="bm_dens_table_plot_container" class="bm-dens-table-plot-container
-                                dens-plot-styling">
-                            <canvas id="bm_dens_table_plot" class="canvas"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- THE 6 ADDITIONAL PLOTS -->
-                <div class="row-wrapper">
-                    <div class="col-left">
-                        <div id="bm_line_1_plot_container" class="bm-line-1-plot-container
-                                dens-plot-styling">
-                            <canvas id="bm_line_1_plot" class="canvas"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-right">
-                        <div id="bm_line_2_plot_container" class="bm-line-2-plot-container
-                                dens-plot-styling">
-                            <canvas id="bm_line_2_plot" class="canvas"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row-wrapper">
-                    <div class="col-left">
-                        <div id="bm_line_3_plot_container" class="bm-line-3-plot-container
-                                dens-plot-styling">
-                            <canvas id="bm_line_3_plot" class="canvas"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-right">
-                        <div id="bm_line_4_plot_container" class="bm-line-4-plot-container
-                                dens-plot-styling">
-                            <canvas id="bm_line_4_plot" class="canvas"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="row-wrapper">
-                    <div class="col-left">
-                        <div id="bm_line_5_plot_container" class="bm-line-5-plot-container
-                                dens-plot-styling">
-                            <canvas id="bm_line_5_plot" class="canvas"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-right">
-                        <div id="bm_line_6_plot_container" class="bm-line-6-plot-container
-                                dens-plot-styling">
-                            <canvas id="bm_line_6_plot" class="canvas"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row-wrapper">
-                    <div class="contour-plot-wrapper dens-plot-styling">
-                        <div class="contour-plot-container">
-                            <div id="contour_plot" style="width:100%; height:100%;">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="placeholder" style="width:100%;height:20px;"></div>
-            </div>
-            <div class="placeholder" style="width:100%;height:42px;"></div>
-
-
-
-
-            <!-- DRIVNG FUNCTION  Part 1 -->
-            <div class="description">
-                <h3>Driving function</h3>
-                <p>Following is the diving function. It is the backbone of
-                    the
-                    above results and can clarify its behavior.
-                </p>
-                <p>
-                <ul>
-                    <li>
-                        Driving function:
-                    </li>
-                </ul>
-                </p>
-                <p style="text-align: center;">
-                    \( \begin{align}
-                    f_{(x)} &= dx^3+cx^2+bx-a \\ \\
-                    F(x) = \int f(x) dx &=
-                    \frac{d}{4}x^4+\frac{c}{3}x^3+\frac{b}{2}x^2-x
-                    \end{align}
-                    \)
-                </p>
-            </div>
-            <div class="df-plot-content-wrapper">
-                <div id="df_plot_container" class="df-plot-container">
-                    <canvas id="df_plot" class="canvas"></canvas>
-                </div>
-
-                <div id="df_X-plot_container" class="df-X-plot-container">
-                    <canvas id="df_X_plot" class="canvas"></canvas>
-                </div>
-
-                <div id="df_input_section" class="df-input-section">
-                    <div class="df-input-wrapper input-wrapper">
-                        <div>\(a\)</div>
-                        <div id="df_a_value" name="df_slide_value" class="df-slide-value slide-value">1</div>
-                        <input id="df_a_slide" type="range" class="df-slide slide" name="df_slide" min="-5" max="5"
-                            step="0.01" value="1">
-
-                    </div>
-                    <div class="df-input-wrapper input-wrapper">
-                        <div>\(b\)</div>
-                        <div id="df_b_value" name="df_slide_value" class="df-slide-value slide-value">0.8</div>
-                        <input id="df_b_slide" type="range" class="df-slide slide" name="df_slide" min="-5" max="5"
-                            step="0.01" value="0.8">
-
-                    </div>
-                    <div class="df-input-wrapper input-wrapper">
-                        <div>\(c\)</div>
-                        <div id="df_c_value" name="df_slide_value" class="df-slide-value slide-value">0</div>
-                        <input id="df_c_slide" type="range" class="df-slide slide" name="df_slide" min="-1" max="1"
-                            step="0.001" value="0">
-
-                    </div>
-                    <div class="df-input-wrapper input-wrapper">
-                        <div>\(d\)</div>
-                        <div id="df_d_value" name="df_slide_value" class="df-slide-value slide-value">-0.001</div>
-                        <input id="df_d_slide" type="range" class="df-slide slide" name="df_slide" min="-0.001"
-                            max="-0.0001" step="0.0001" value="-0.001">
-
-                    </div>
-                    <button class="someBtn" id="df_resetBtn">Reset</button>
-                    <div class="X-input-wrapper">
-                        \(y_0\):
-                        <input id="df_X_input_y0" type="text" class="df_X_input_field" value=1.25 />
-                    </div>
-                </div>
-            </div>
-
+            <button class="someBtn" id="bm_againBtn">Again</button>
+            <button class="someBtn" id="bm_resetBtn">Reset</button>
+          </div>
         </div>
-        <div id="footer" style="text-align:center; margin:0 auto;
-                padding-top: 6rem; width:
-                50%; font-size: 16px;">
-            Site developed by <a href="https://www.b-schwertfeger.de">Benjamin
-                T. Schwertfeger</a> (2021) <br>
-            <a href="https://www.awi.de" target="_blank">Alfred Wegener Institute, Helmholtz Centre for Polar and Marine
-                Research, Bremerhaven, Germany</a>
-        </div>
-        <div class="placeholder" style="width:100%;height:100px;"></div>
-        <script src="main.js" async defer></script>
-        <script src="layout_script.js" async defer></script>
-</body>
 
+        <div class="placeholder" style="width: 100%; height: 42px"></div>
+        <div class="description">
+          <h3>Analysis of the densities</h3>
+          <p>
+            In the following you have the possibility to have a closer look at
+            the distributions in certain time steps.
+          </p>
+          <p>Explanations:</p>
+          <ul>
+            <li>\(t\): integration time in time units (default: 1000)</li>
+            <li>\(n\): step size (default: 0.5)</li>
+            <li>\(N\): number of steps (default: \(t/n = 2000\))</li>
+            <li>
+              \(N_{particles}\): number of the particles (default:
+              \(N_{particles} = 1000\))
+            </li>
+            <li>
+              \(h\): matrix with the shape \((N, 40)\) where \(40\) is the
+              number of equally spaced categories in which the values are
+              grouped. Thus in a histogram up to 40 bars would be possible.
+            </li>
+            <li>\(C_a\): factor of random deviation</li>
+          </ul>
+          <p>
+            Figure a) represents the distribution of the values between the
+            steps \(N/2\) and \(N\).
+          </p>
+          <p>Figure b) how often does which value occur?</p>
+          <p>
+            Figure c) shows the distribution of the values in the first step (R:
+            h[1,]; Python: h[0]). Here it is to be noted that with fixed
+            starting value in the first step always the same distribution
+            occurs. However, if the start is chosen randomly, variations can be
+            seen here as well.
+          </p>
+          <p>
+            Figure d), e) and f) show the distributions of \(N_{particles}\) in
+            the second, fourth and eighth step, respectively.
+          </p>
+          <p>
+            Figure g) shows the distribution of \(N_{particles}\) at step
+            \(N/2\).
+          </p>
+          <p>
+            Figure h) shows the average of the distributions of the last and
+            penultimate step.
+          </p>
+        </div>
+
+        <!-- BROWNIAN MOTION DENSITY ANALYSIS PART 1 -->
+        <div class="bm-dens-plot-content-wrapper">
+          <div id="bm_dens_input_section" class="bm-dens-input-section">
+            <div class="bm-dens-input-wrapper input-wrapper">
+              <div>\(C_a\)</div>
+              <div
+                id="bm_dens_Ca_value"
+                name="bm_dens_slide_value"
+                class="bm-dens-slide-value slide-value"
+              >
+                10
+              </div>
+              <input
+                id="bm_dens_Ca_slide"
+                type="range"
+                class="bm-dens-slide slide"
+                name="bm_dens_slide"
+                min="-0"
+                max="20"
+                step="0.5"
+                value="10"
+              />
+            </div>
+            <div class="bm-dens-input-wrapper input-wrapper">
+              <div>\(t\) (integration time)</div>
+              <div
+                id="bm_dens_T_value"
+                name="bm_dens_slide_value"
+                class="bm-dens-slide-value slide-value"
+              >
+                1000
+              </div>
+              <input
+                id="bm_dens_T_slide"
+                type="range"
+                class="bm-dens_slide slide"
+                name="bm_dens_slide"
+                min="40"
+                max="2500"
+                step="5"
+                value="1000"
+              />
+            </div>
+            <div
+              class="bm-dens-input-wrapper input-wrapper"
+              style="min-width: 100px"
+            >
+              <div>random start value</div>
+              <label class="switch">
+                <input id="bm_dens_randomStartValueCheckbox" type="checkbox" />
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+            <!-- <div class="bm-dens-input-wrapper input-wrapper"> -->
+            <button class="someBtn" id="bm_dens_againBtn">Again</button>
+            <button class="someBtn" id="bm_dens_resetBtn">Reset</button>
+            <!-- </div> -->
+          </div>
+          <div class="placeholder" style="width: 100%; height: 40px"></div>
+
+          <!-- FIRST TWO PLOTS - HISTOGRAM OF LAST 1000 STEPS AND TABLE PLOT -->
+          <div class="row-wrapper">
+            <div class="col-left">
+              <div
+                id="bm_dens_line_plot_container"
+                class="bm-dens-line-hist-plot-container dens-plot-styling"
+              >
+                <canvas id="bm_dens_line_plot" class="canvas"></canvas>
+              </div>
+            </div>
+            <div class="col-right">
+              <div
+                id="bm_dens_table_plot_container"
+                class="bm-dens-table-plot-container dens-plot-styling"
+              >
+                <canvas id="bm_dens_table_plot" class="canvas"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- THE 6 ADDITIONAL PLOTS -->
+          <div class="row-wrapper">
+            <div class="col-left">
+              <div
+                id="bm_line_1_plot_container"
+                class="bm-line-1-plot-container dens-plot-styling"
+              >
+                <canvas id="bm_line_1_plot" class="canvas"></canvas>
+              </div>
+            </div>
+            <div class="col-right">
+              <div
+                id="bm_line_2_plot_container"
+                class="bm-line-2-plot-container dens-plot-styling"
+              >
+                <canvas id="bm_line_2_plot" class="canvas"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="row-wrapper">
+            <div class="col-left">
+              <div
+                id="bm_line_3_plot_container"
+                class="bm-line-3-plot-container dens-plot-styling"
+              >
+                <canvas id="bm_line_3_plot" class="canvas"></canvas>
+              </div>
+            </div>
+            <div class="col-right">
+              <div
+                id="bm_line_4_plot_container"
+                class="bm-line-4-plot-container dens-plot-styling"
+              >
+                <canvas id="bm_line_4_plot" class="canvas"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="row-wrapper">
+            <div class="col-left">
+              <div
+                id="bm_line_5_plot_container"
+                class="bm-line-5-plot-container dens-plot-styling"
+              >
+                <canvas id="bm_line_5_plot" class="canvas"></canvas>
+              </div>
+            </div>
+            <div class="col-right">
+              <div
+                id="bm_line_6_plot_container"
+                class="bm-line-6-plot-container dens-plot-styling"
+              >
+                <canvas id="bm_line_6_plot" class="canvas"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="row-wrapper">
+            <div class="contour-plot-wrapper dens-plot-styling">
+              <div class="contour-plot-container">
+                <div id="contour_plot" style="width: 100%; height: 100%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="placeholder" style="width: 100%; height: 20px"></div>
+        </div>
+        <div class="placeholder" style="width: 100%; height: 42px"></div>
+
+        <!-- DRIVING FUNCTION  Part 1 -->
+        <div class="description">
+          <h3>Driving function</h3>
+          <p>
+            Following is the diving function. It is the backbone of the above
+            results and can clarify its behavior.
+          </p>
+          <ul>
+            <li>Driving function:</li>
+            <!-- prettier-ignore-attribute -->
+            <p style="text-align: center;">
+              \( \begin{align} f_{(x)} &= dx^3+cx^2+bx-a \\ \\ F(x) = \int f(x)
+              dx &= \frac{d}{4}x^4+\frac{c}{3}x^3+\frac{b}{2}x^2-x \end{align}
+              \)
+            </p>
+          </ul>
+        </div>
+        <div class="df-plot-content-wrapper">
+          <div id="df_plot_container" class="df-plot-container">
+            <canvas id="df_plot" class="canvas"></canvas>
+          </div>
+
+          <div id="df_X-plot_container" class="df-X-plot-container">
+            <canvas id="df_X_plot" class="canvas"></canvas>
+          </div>
+
+          <div id="df_input_section" class="df-input-section">
+            <div class="df-input-wrapper input-wrapper">
+              <div>\(a\)</div>
+              <div
+                id="df_a_value"
+                name="df_slide_value"
+                class="df-slide-value slide-value"
+              >
+                1
+              </div>
+              <input
+                id="df_a_slide"
+                type="range"
+                class="df-slide slide"
+                name="df_slide"
+                min="-5"
+                max="5"
+                step="0.01"
+                value="1"
+              />
+            </div>
+            <div class="df-input-wrapper input-wrapper">
+              <div>\(b\)</div>
+              <div
+                id="df_b_value"
+                name="df_slide_value"
+                class="df-slide-value slide-value"
+              >
+                0.8
+              </div>
+              <input
+                id="df_b_slide"
+                type="range"
+                class="df-slide slide"
+                name="df_slide"
+                min="-5"
+                max="5"
+                step="0.01"
+                value="0.8"
+              />
+            </div>
+            <div class="df-input-wrapper input-wrapper">
+              <div>\(c\)</div>
+              <div
+                id="df_c_value"
+                name="df_slide_value"
+                class="df-slide-value slide-value"
+              >
+                0
+              </div>
+              <input
+                id="df_c_slide"
+                type="range"
+                class="df-slide slide"
+                name="df_slide"
+                min="-1"
+                max="1"
+                step="0.001"
+                value="0"
+              />
+            </div>
+            <div class="df-input-wrapper input-wrapper">
+              <div>\(d\)</div>
+              <div
+                id="df_d_value"
+                name="df_slide_value"
+                class="df-slide-value slide-value"
+              >
+                -0.001
+              </div>
+              <input
+                id="df_d_slide"
+                type="range"
+                class="df-slide slide"
+                name="df_slide"
+                min="-0.001"
+                max="-0.0001"
+                step="0.0001"
+                value="-0.001"
+              />
+            </div>
+            <button class="someBtn" id="df_resetBtn">Reset</button>
+            <div class="X-input-wrapper">
+              \(y_0\):
+              <input
+                id="df_X_input_y0"
+                type="text"
+                class="df_X_input_field"
+                value="1.25"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        id="footer"
+        style="
+          text-align: center;
+          margin: 0 auto;
+          padding-top: 6rem;
+          width: 50%;
+          font-size: 16px;
+        "
+      >
+        Site developed by
+        <a href="https://www.b-schwertfeger.de">Benjamin T. Schwertfeger</a>
+        (2021) <br />
+        <a href="https://www.awi.de" target="_blank"
+          >Alfred Wegener Institute, Helmholtz Centre for Polar and Marine
+          Research, Bremerhaven, Germany</a
+        >
+      </div>
+      <div class="placeholder" style="width: 100%; height: 100px"></div>
+      <script src="js/main.js" async defer></script>
+      <script src="js/layout_script.js" async defer></script>
+    </div>
+  </body>
 </html>

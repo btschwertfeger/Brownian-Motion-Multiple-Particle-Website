@@ -1,6 +1,8 @@
 # [Brownian Motion with multiple particles - Website](https://btschwertfeger.github.io/Brownian-Motion-Multiple-Particle-Website)
 
-This website serves as teaching material for the support and understanding of the brownian motion and the driving function by visualizing results which can be manipulated.
+This website serves as teaching material for the support and understanding of
+the Brownian Motion and the driving function by visualizing results which can be
+manipulated.
 
 ![Brownian motion plot](images/bm.png)
 
