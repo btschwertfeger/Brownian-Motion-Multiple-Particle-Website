@@ -7,14 +7,7 @@
 -->
 */
 
-/*
-# =========
-# =====================
-# =====================================
-# ===================================================================================
-# ===================================================================================
-// BROWNIAN MOTION FIRST LINE AND HIST PLOT SETTINGS
-*/
+/* BROWNIAN MOTION FIRST LINE AND HIST PLOT SETTINGS */
 
 const bm_Ca_slide = document.getElementById("bm_Ca_slide"),
   bm_T_slide = document.getElementById("bm_T_slide"),
